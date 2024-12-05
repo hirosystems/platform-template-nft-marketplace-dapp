@@ -1,0 +1,42 @@
+{
+  "name": "my-stacks-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^2.10.4",
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@stacks/auth": "^7.0.2",
+    "@stacks/blockchain-api-client": "^7.2.2",
+    "@stacks/connect": "^7.9.0",
+    "@stacks/network": "^7.0.2",
+    "@stacks/transactions": "^7.0.2",
+    "@stacks/wallet-sdk": "^7.0.2",
+    "framer-motion": "^10.18.0",
+    "next": "14.2.18",
+    "next-themes": "^0.4.3",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-icons": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@typescript-eslint/eslint-plugin": "^8.17.0",
+    "@typescript-eslint/parser": "^8.17.0",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.18",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
+}
