@@ -23,9 +23,9 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 ## Setup Devnet
 ### Start Devnet in the Platform
 1. Login to the Platform and start the devnet on the nft-marketplace project.
-2. Use the contracts/nft-marketplace.clar file content and replace the existing content in the contracts/nft-marketplace.clar file in the nft-marketplace project.
+2. Copy the content from contracts/nft-marketplace.clar in this repository and paste it into the contracts/nft-marketplace.clar file in your Platform project, replacing any existing content.
 3. Add also the contracts/funny-dog.clar file content to the contracts folder in the nft-marketplace project.
-4. Deploy the contracts to the devnet by clicking on the Deploy Contracts button 
+4. In the Platform deploy the contracts to the devnet by generating a deployment plan and by clicking on the Deploy button.
 
 
 ### Configure the Front-End
