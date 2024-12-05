@@ -30,6 +30,7 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 ### Configure the Front-End
 1. In the Platform web app, go to the API Keys page and get the API Key.
-Add your Platform API Key to the .env file to the variable NEXT_PUBLIC_PLATFORM_HIRO_API_KEY
+2. copy the .env.example to .env
+3. Add your Platform API Key to the env variable NEXT_PUBLIC_PLATFORM_HIRO_API_KEY in your .env file
 This will automatically configure the application to use the platform hosted devnet that is currently running.
-The devnet wallet will be then used to execute the contract calls.
+The devnet wallet will be then used to execute the contract calls and you won't need to use any wallet extension to interact with the marketplace.
