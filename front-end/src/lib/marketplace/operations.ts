@@ -91,7 +91,6 @@ export interface Listing {
   paymentAssetContract: string | null;
 }
 
-// Mock data for development - replace with actual API calls later
 const mockListings: Listing[] = [
   {
     id: 0,
@@ -127,6 +126,5 @@ const mockListings: Listing[] = [
 ];
 
 export const fetchListings = async (): Promise<Listing[]> => {
-  // TODO: Replace with actual API call to your backend or smart contract
   return mockListings;
 };

@@ -17,6 +17,11 @@ import { openContractCall } from "@stacks/connect";
 import { listAsset } from "@/lib/marketplace/operations";
 import { shouldUseDirectCall, executeContractCall } from '@/lib/contract-utils';
 import { storeTxid } from '@/utils/localStorageUtils';
+import { useDevnetWallet } from '@/lib/devnet-wallet-context';
+import { NonFungibleTokenHoldingsList } from "@stacks/blockchain-api-client";
+import { useNftHoldings } from "@/hooks/useNftHoldings";
+import { getApi } from "@/lib/stacks-api";
+import { DEVNET_STACKS_BLOCKCHAIN_API_URL } from "@/constants/devnet";
 
 export default function ListPage() {
   const [tokenId, setTokenId] = useState("");
@@ -25,6 +30,14 @@ export default function ListPage() {
   const [nftContractName, setNftContractName] = useState("");
   const router = useRouter();
   const toast = useToast();
+  const { currentWallet } = useDevnetWallet();
+  const api = getApi(DEVNET_STACKS_BLOCKCHAIN_API_URL);
+
+  const { data: nftHoldings } = useNftHoldings(api.nonFungibleTokensApi, currentWallet?.stxAddress || "", {
+    enabled: !!currentWallet?.stxAddress,
+  });
+
+  console.log('nftHoldings', nftHoldings)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,8 +52,8 @@ export default function ListPage() {
       });
       console.log('txOptions', txOptions)
 
-      if (shouldUseDirectCall()) {
-        const { txid } = await executeContractCall(txOptions);
+      if (shouldUseDirectCall(currentWallet)) {
+        const { txid } = await executeContractCall(txOptions, currentWallet);
         console.log('txid', txid);
         storeTxid(txid);
         toast({

@@ -1,31 +1,21 @@
 "use client";
 
-import { Box, Button, Container, Flex, Tooltip, Tag } from "@chakra-ui/react";
+import { Box, Button, Container, Flex, Link } from "@chakra-ui/react";
 import { useContext } from "react";
 import HiroWalletContext from "./HiroWalletProvider";
 import { showConnect } from "@stacks/connect";
-import Link from "next/link";
 import { isDevnetEnvironment } from '@/lib/contract-utils';
+import { useDevnetWallet } from '@/lib/devnet-wallet-context';
+import { DevnetWalletButton } from './DevnetWalletButton';
 
 export const Navbar = () => {
-  const { testnetAddress } = useContext(HiroWalletContext);
-
-  const handleConnect = () => {
-    showConnect({
-      appDetails: {
-        name: "Your App Name",
-        icon: "/hiro-logo.png",
-      },
-      onFinish: () => {
-        window.location.reload();
-      },
-    });
-  };
+  const { isWalletConnected } = useContext(HiroWalletContext);
+  const { currentWallet, wallets, setCurrentWallet } = useDevnetWallet();
 
   return (
-    <Box as="nav" bg="white" boxShadow="sm" py={4}>
+    <Box as="nav" bg="white" boxShadow="sm">
       <Container maxW="container.xl">
-        <Flex justify="space-between" align="center">
+        <Flex justify="space-between" h={16} align="center">
           <Flex align="center">
             <Flex
               bg="white"
@@ -44,54 +34,52 @@ export const Navbar = () => {
             >
               /-/
             </Flex>
-            <Box fontSize="lg" fontWeight="bold" color="gray.900" ml={4}>
-              NFT Marketplace
-            </Box>
+            <Link href="/" textDecoration="none">
+              <Box fontSize="lg" fontWeight="bold" color="gray.900" ml={4}>
+                NFT Marketplace
+              </Box>
+            </Link>
           </Flex>
-          <Flex gap={4} align="center">
+          <Flex align="center" gap={4}>
             <Link href="/marketplace/list">
-              <Box
-                as="span"
-                px={3}
-                h="10"
-                borderRadius="xl"
-                cursor="pointer"
-                fontSize="sm"
-                fontWeight="medium"
-                display="flex"
-                alignItems="center"
-                _hover={{ bg: "gray.100" }}
-                transition="all 0.2s"
-              >
-                <Box as="span" mr={2}>+</Box>
+              <Box>
+                <Box as="span" mr={2}>
+                  +
+                </Box>
                 Create
               </Box>
             </Link>
             {isDevnetEnvironment() ? (
-              <Tooltip label="Devnet connection detected, using the devnet wallet" bg="gray.800">
-                <Flex align="center" gap={2}>
-                  <Box fontSize="sm">
-                    {testnetAddress?.slice(0, 6)}...{testnetAddress?.slice(-4)}
-                  </Box>
-                  <Tag size="sm" colorScheme="purple" borderRadius="full">
-                    devnet
-                  </Tag>
-                </Flex>
-              </Tooltip>
+              <DevnetWalletButton
+                currentWallet={currentWallet}
+                wallets={wallets}
+                onWalletSelect={setCurrentWallet}
+              />
             ) : (
-                <Button
-                  colorScheme="orange"
-                  borderRadius="full"
-                  onClick={handleConnect}
-                >
-                  {testnetAddress
-                    ? `${testnetAddress.slice(0, 6)}...${testnetAddress.slice(-4)}`
-                    : "Connect Wallet"}
-                </Button>
+              <Button
+                onClick={() => {
+                  if (!isWalletConnected) {
+                    showConnect({
+                      appDetails: {
+                        name: "NFT Marketplace",
+                        icon: "https://freesvg.org/img/1541103084.png",
+                      },
+                      onFinish: () => {
+                        window.location.reload();
+                      },
+                      onCancel: () => {
+                        console.log("popup closed!");
+                      },
+                    });
+                  }
+                }}
+              >
+                {isWalletConnected ? "Connected" : "Connect Wallet"}
+              </Button>
             )}
           </Flex>
         </Flex>
       </Container>
     </Box>
   );
-}; 
+};

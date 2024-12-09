@@ -10,6 +10,7 @@ import {
   AnchorMode
 } from '@stacks/transactions';
 import { generateWallet } from '@stacks/wallet-sdk';
+import { DevnetWallet } from './devnet-wallet-context';
 
 interface DirectCallResponse {
   txid: string;
@@ -18,18 +19,14 @@ interface DirectCallResponse {
 export const isDevnetEnvironment = () =>
   process.env.NEXT_PUBLIC_STACKS_NETWORK === 'devnet';
 
-export const getDevnetWallet = () =>
-  'twice kind fence tip hidden tilt action fragile skin nothing glory cousin green tomorrow spring wrist shed math olympic multiply hip blue scout claw'
-// process.env.NEXT_PUBLIC_DEVNET_WALLET;
-
-export const shouldUseDirectCall = () =>
-  isDevnetEnvironment() && !!getDevnetWallet();
+export const shouldUseDirectCall = (wallet: DevnetWallet | null) =>
+  isDevnetEnvironment() && !!wallet?.mnemonic;
 
 export const executeContractCall = async (
-  txOptions: ContractCallRegularOptions
+  txOptions: ContractCallRegularOptions,
+  currentWallet: DevnetWallet | null
 ): Promise<DirectCallResponse> => {
-  const mnemonic = getDevnetWallet();
-  console.log('mnemonic', mnemonic)
+  const mnemonic = currentWallet?.mnemonic;
   if (!mnemonic) throw new Error('Devnet wallet not configured');
 
   const wallet = await generateWallet({
@@ -59,4 +56,4 @@ export const executeContractCall = async (
   }
 
   return { txid: response.txid };
-}; 
+};

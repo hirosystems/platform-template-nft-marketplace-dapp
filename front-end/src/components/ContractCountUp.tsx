@@ -12,9 +12,11 @@ import { shouldUseDirectCall, executeContractCall } from '@/lib/contract-utils';
 import { useToast } from "@chakra-ui/react";
 import { openContractCall } from "@stacks/connect";
 import { DEVNET_NETWORK } from "@/constants/devnet";
+import { useDevnetWallet } from '@/lib/devnet-wallet-context';
 
 const ContractCountUp = () => {
   const { isWalletConnected } = useContext(HiroWalletContext);
+  const { currentWallet } = useDevnetWallet();
   const toast = useToast();
 
   async function countUp() {
@@ -30,9 +32,9 @@ const ContractCountUp = () => {
     };
 
     try {
-      if (shouldUseDirectCall()) {
+      if (shouldUseDirectCall(currentWallet)) {
         try {
-          const { txid } = await executeContractCall(txOptions);
+          const { txid } = await executeContractCall(txOptions, currentWallet);
           toast({
             title: "Success",
             description: `Transaction broadcast with ID: ${txid}`,

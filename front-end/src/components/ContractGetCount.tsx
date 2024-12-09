@@ -1,18 +1,21 @@
 "use client";
 
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { getApi } from '@/lib/stacks-api';
 import { ReadOnlyFunctionSuccessResponse } from '@stacks/blockchain-api-client';
 import { CONTRACTS } from "@/constants/contracts";
-import { DEVNET_ADDRESS, DEVNET_STACKS_BLOCKCHAIN_API_URL } from "@/constants/devnet";
-import HiroWalletContext from "./HiroWalletProvider";
-import { cvToHex, cvToString, hexToCV, standardPrincipalCV } from '@stacks/transactions';
+import { DEVNET_STACKS_BLOCKCHAIN_API_URL } from "@/constants/devnet";
+import {
+  cvToHex,
+  cvToString,
+  hexToCV,
+  standardPrincipalCV,
+} from "@stacks/transactions";
 
+const DEVNET_ADDRESS = "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM";
 const ContractGetCount = () => {
-  const { isWalletConnected, testnetAddress } = useContext(HiroWalletContext);
   const [count, setCount] = useState<string | null>(null);
 
-  console.log(process.env)
 
   async function getCount() {
     try {

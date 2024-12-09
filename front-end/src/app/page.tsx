@@ -23,7 +23,7 @@ export default function BrowsePage() {
     console.log('storedTxids', storedTxids)
 
     // Limit the listings to the number of stored txids
-    const limitedListings = fetchedListings.slice(0, storedTxids);
+    const limitedListings = fetchedListings.slice(0, 3);
 
     console.log("Fetched listings:", limitedListings);
     setListings(limitedListings);
