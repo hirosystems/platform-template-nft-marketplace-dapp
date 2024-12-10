@@ -1,12 +1,14 @@
 import { UseQueryResult, useQuery } from '@tanstack/react-query';
 import { NonFungibleTokenHoldingsList } from '@stacks/stacks-blockchain-api-types';
-import { NonFungibleTokensApi, TransactionsApi } from '@stacks/blockchain-api-client';
+import { TransactionsApi } from '@stacks/blockchain-api-client';
+import { getApi } from '@/lib/stacks-api';
+import { DEVNET_STACKS_BLOCKCHAIN_API_URL } from '@/constants/devnet';
 
 export const useNftHoldings = (
-  api: NonFungibleTokensApi,
   address?: string,
   options: any = {}
 ): UseQueryResult<NonFungibleTokenHoldingsList> => {
+  const api = getApi(DEVNET_STACKS_BLOCKCHAIN_API_URL).nonFungibleTokensApi;
   return useQuery({
     queryKey: ['nftHoldings', address],
     queryFn: async () => {

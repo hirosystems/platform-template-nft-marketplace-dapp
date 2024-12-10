@@ -8,6 +8,11 @@ import {
   noneCV,
   contractPrincipalCV,
   tupleCV,
+  cvToValue,
+  fetchCallReadOnlyFunction,
+  cvToJSON,
+  deserializeCV,
+  cvToString,
 } from '@stacks/transactions';
 import { STACKS_TESTNET } from '@stacks/network';
 import { MARKETPLACE_CONTRACT } from '@/constants/marketplace';
@@ -125,6 +130,53 @@ const mockListings: Listing[] = [
 
 ];
 
-export const fetchListings = async (): Promise<Listing[]> => {
-  return mockListings;
+export interface ReadOnlyResponse {
+  okay: boolean;
+  result: string;
+}
+
+export const parseReadOnlyResponse = ({ result }: ReadOnlyResponse) => {
+  const hex = result.slice(2);
+  const bufferCv = Buffer.from(hex, 'hex');
+  const clarityValue = deserializeCV(bufferCv);
+  return cvToString(clarityValue);
+};
+
+
+export const fetchListings = async (maxId: number = 10): Promise<Listing[]> => {
+  const listings: Listing[] = [];
+
+  for (let currentId = 0; currentId <= maxId; currentId++) {
+    try {
+      const response = await fetchCallReadOnlyFunction({
+        ...baseContractCall,
+        functionName: 'get-listing',
+        functionArgs: [uintCV(currentId)],
+        senderAddress: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+        client: { baseUrl: 'http://localhost:3999' },
+      });
+      console.log('Response:', response);
+
+      const result = cvToValue(response)
+      const value = result.value
+
+      if (result) {
+        listings.push({
+          id: currentId,
+          maker: value.maker.value,
+          taker: value.taker?.value || null,
+          tokenId: value['token-id'].value,
+          nftAssetContract: value['nft-asset-contract'].value,
+          price: value.price.value,
+          expiry: value.expiry.value,
+          paymentAssetContract: value['payment-asset-contract']?.value || null,
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching listing:', error);
+      break;
+    }
+  }
+
+  return listings;
 };

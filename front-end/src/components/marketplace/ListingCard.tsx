@@ -12,6 +12,7 @@ import { useDevnetWallet } from "@/lib/devnet-wallet-context";
 import { getApi } from "@/lib/stacks-api";
 import { DEVNET_STACKS_BLOCKCHAIN_API_URL } from "@/constants/devnet";
 import { useGetTxId } from "@/hooks/useNftHoldings";
+import { formatContractName } from '@/utils/formatting';
 
 interface ListingCardProps {
   listing: {
@@ -167,7 +168,7 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
         <Stack spacing={2} p={4}>
           <Heading size="md">NFT #{listing.tokenId}</Heading>
           <Text fontSize="sm" color="gray.500">
-            Collection Name
+            {formatContractName(listing.nftAssetContract)}
           </Text>
           <Flex justify="space-between" align="center">
             <Text color="orange.500" fontWeight="bold">

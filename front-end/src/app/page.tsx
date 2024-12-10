@@ -4,29 +4,39 @@ import { useState, useEffect } from "react";
 import { Container, SimpleGrid, VStack, useColorMode, Button, Text, Center } from "@chakra-ui/react";
 import { ListingCard } from "@/components/marketplace/ListingCard";
 import { fetchListings, Listing } from "@/lib/marketplace/operations";
+import { useNftHoldings } from "@/hooks/useNftHoldings";
+import { useDevnetWallet } from "@/lib/devnet-wallet-context";
 
 export default function BrowsePage() {
   const { setColorMode } = useColorMode();
   const [listings, setListings] = useState<Listing[]>([]);
 
   useEffect(() => {
-    setColorMode('light');
+    setColorMode("light");
   }, []);
+
+  // use useNftHoldings to fetch the NFT holdings
+  const { currentWallet } = useDevnetWallet();
+  const { data: nftHoldings, isLoading: nftHoldingsLoading } = useNftHoldings(
+    currentWallet?.stxAddress || ""
+  );
+  console.log("nftHoldings", nftHoldings);
 
   const loadListings = async () => {
     const fetchedListings = await fetchListings();
+    console.log("fetchedListings", fetchedListings);
 
     // Get the number of txids from localStorage
-    const storedTxidsNumber = localStorage.getItem('txid')
-      ? Object.keys(JSON.parse(localStorage.getItem('txid')!)).length
-      : 0;
-    console.log('storedTxids', storedTxidsNumber)
+    // const storedTxidsNumber = localStorage.getItem('txid')
+    //   ? Object.keys(JSON.parse(localStorage.getItem('txid')!)).length
+    //   : 0;
+    // console.log('storedTxids', storedTxidsNumber)
 
-    // Limit the listings to the number of stored txids
-    const limitedListings = fetchedListings.slice(0, storedTxidsNumber);
+    // // Limit the listings to the number of stored txids
+    // const limitedListings = fetchedListings.slice(0, storedTxidsNumber);
 
-    console.log("Fetched listings:", limitedListings);
-    setListings(limitedListings);
+    // console.log("Fetched listings:", limitedListings);
+    setListings(fetchedListings);
   };
 
   useEffect(() => {
