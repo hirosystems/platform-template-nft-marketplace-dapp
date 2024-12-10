@@ -42,9 +42,6 @@ export default function MyNFTsPage() {
       </Center>
     );
   }
-  console.log("nftHoldings2", nftHoldings);
-  console.log("foo", nftHoldings.results[0].asset_identifier.split("::"));
-
   return (
     <Container maxW="container.xl" py={8}>
       <VStack spacing={6} align="stretch">
