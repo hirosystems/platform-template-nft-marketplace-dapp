@@ -16,6 +16,7 @@ import {
 } from '@stacks/transactions';
 import { STACKS_TESTNET } from '@stacks/network';
 import { MARKETPLACE_CONTRACT } from '@/constants/marketplace';
+import { DEVNET_STACKS_BLOCKCHAIN_API_URL } from '@/constants/devnet';
 
 const baseContractCall = {
   network: STACKS_TESTNET,
@@ -153,7 +154,7 @@ export const fetchListings = async (maxId: number = 10): Promise<Listing[]> => {
         functionName: 'get-listing',
         functionArgs: [uintCV(currentId)],
         senderAddress: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-        client: { baseUrl: 'http://localhost:3999' },
+        client: { baseUrl: DEVNET_STACKS_BLOCKCHAIN_API_URL},
       });
       console.log('Response:', response);
 
