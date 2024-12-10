@@ -60,7 +60,22 @@ export const DevnetWalletButton = ({ currentWallet, wallets, onWalletSelect }: D
             key={wallet.stxAddress}
             onClick={() => onWalletSelect(wallet)}
           >
-            {formatStxAddress(wallet.stxAddress)}
+            <Flex align="center" gap={2}>
+              <Box
+                fontSize="sm"
+                fontFamily="mono"
+                width="140px"
+                overflow="hidden"
+                textOverflow="ellipsis"
+              >
+                {formatStxAddress(wallet.stxAddress)}
+              </Box>
+              {wallet.label && (
+                <Tag size="sm" colorScheme="gray" borderRadius="full">
+                  {wallet.label}
+                </Tag>
+              )}
+            </Flex>
           </MenuItem>
         ))}
       </MenuList>

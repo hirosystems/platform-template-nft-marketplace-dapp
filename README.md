@@ -12,7 +12,7 @@ This is a NFT Marketplace built on Stacks using clarity and [Next.js](https://ne
 3. Once Devnet is started, select the api key shown in the Devnet Stacks API URL 
 which will be of the form
 ```
-https://api.platform.stg.hiro.so/v1/ext/abfd1aee0cbdd85d67b42f04cc3d0b52/stacks-blockchain-api
+https://api.platform.hiro.so/v1/ext/abfd1aee0cbdd85d67b42f04cc3d0b52/stacks-blockchain-api
 ```
 Your api key will be the value after ext/ and before /stacks-blockchain-api. In this example it is abfd1aee0cbdd85d67b42f04cc3d0b52
 
