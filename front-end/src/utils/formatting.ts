@@ -1,4 +1,5 @@
 export const formatContractName = (contractAddress: string): string => {
+  console.log('contractAddress', contractAddress)
   return contractAddress
     .split('.')[1]
     .split('-')

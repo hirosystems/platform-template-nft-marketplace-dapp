@@ -13,6 +13,7 @@ import { getApi } from "@/lib/stacks-api";
 import { DEVNET_STACKS_BLOCKCHAIN_API_URL } from "@/constants/devnet";
 import { useGetTxId } from "@/hooks/useNftHoldings";
 import { formatContractName } from '@/utils/formatting';
+import { getPlaceholderImage } from "@/utils/nft-utils";
 
 interface ListingCardProps {
   listing: {
@@ -140,10 +141,6 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
         status: "error",
       });
     }
-  };
-
-  const getPlaceholderImage = (tokenId: number) => {
-    return `https://placedog.net/200/200?id=${tokenId % 16}`;
   };
 
   return (

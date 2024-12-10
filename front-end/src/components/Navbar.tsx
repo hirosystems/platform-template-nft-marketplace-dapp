@@ -49,6 +49,9 @@ export const Navbar = () => {
                 Create
               </Box>
             </Link>
+            <Link href="/my-nfts">
+              <Box>My NFTs</Box>
+            </Link>
             {isDevnetEnvironment() ? (
               <DevnetWalletButton
                 currentWallet={currentWallet}
