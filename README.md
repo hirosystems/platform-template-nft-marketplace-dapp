@@ -1,8 +1,8 @@
-# NFT Marketplace on Stacks
+![NFT Marketplace on Stacks](./marketplace-screenshot.png)
 
-A full-featured NFT marketplace built on the Stacks blockchain, allowing users to mint, list, and trade NFTs using either STX or other fungible tokens as payment. This project demonstrates how to build decentralized applications (dApps) using Clarity smart contracts and Next.js.
+This is a full-stack demo of an NFT marketplace built on the Stacks blockchain, allowing users to mint, list, and purchase NFTs using STX tokens. This project demonstrates how to build decentralized Stacks applications using Clarity smart contracts and Next.js with the Hiro Platform.
 
-By following this guide, you can have a working NFT marketplace live on the Stacks blockchain in minutes!
+By following this guide, you can have a working NFT marketplace live on the Stacks blockchain in less than 5 minutes!
 
 ## Features
 
@@ -11,13 +11,6 @@ By following this guide, you can have a working NFT marketplace live on the Stac
 - Secure ownership tracking and transfers
 - Time-based listing expiration
 - Pre-configured STX wallet plugin for Devnet testing
-
-## Project Structure
-
-- `/clarity` - Contains Clarity smart contracts and testing framework
-  - `contracts/funny-dog.clar` - NFT contract for minting and managing collectible dog NFTs
-  - `contracts/nft-marketplace.clar` - Decentralized marketplace contract governing NFT listing and sales
-- `/front-end` - Next.js web application for the marketplace frontend which is connected to the Clarity contracts
 
 ## Getting Started
 
@@ -34,7 +27,7 @@ By following this guide, you can have a working NFT marketplace live on the Stac
    - Navigate to your project and start Devnet
    - Copy your API key from either:
      - The Devnet Stacks API URL: `https://api.platform.hiro.so/v1/ext/<YOUR-API-KEY>/stacks-blockchain-api`
-     - Or from https://platform.stg.hiro.so/settings/api-keys
+     - Or from https://platform.hiro.so/settings/api-keys
 
 2. **Configure Local Environment**
    
