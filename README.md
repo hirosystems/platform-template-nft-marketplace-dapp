@@ -9,7 +9,6 @@ By following this guide, you can have a working NFT marketplace live on the Stac
 - Mint NFTs to user wallets
 - List NFTs for sale
 - Secure ownership tracking and transfers
-- Time-based listing expiration
 - Pre-configured STX wallet plugin for Devnet testing
 
 ## Getting Started
@@ -17,12 +16,13 @@ By following this guide, you can have a working NFT marketplace live on the Stac
 ### Prerequisites
 
 - [Hiro Platform](https://platform.hiro.so) account
-- Node.js 16+ and npm/yarn/pnpm
-- *(Recommended)* [Clarinet](https://github.com/hirosystems/clarinet) and the [Clarity VSCode Extension](https://marketplace.visualstudio.com/items?itemName=HiroSystems.clarity-lsp)
+- Node.js 18+ and npm/yarn/pnpm
+- _(Recommended)_ [Clarinet](https://github.com/hirosystems/clarinet) and the [Clarity VSCode Extension](https://marketplace.visualstudio.com/items?itemName=HiroSystems.clarity-lsp)
 
 ### Setup Development Environment
 
 1. **Start Devnet in Hiro Platform**
+
    - Log into the [Hiro Platform](https://platform.hiro.so)
    - Navigate to your project and start Devnet
    - Copy your API key from either:
@@ -30,8 +30,9 @@ By following this guide, you can have a working NFT marketplace live on the Stac
      - Or from https://platform.hiro.so/settings/api-keys
 
 2. **Configure Local Environment**
-   
+
    Git clone the project code to your local machine via HTTPS or SSH and navigate to the project root in your terminal.
+
    ```bash
    # Install Clarity project dependencies
    cd clarity
@@ -42,17 +43,21 @@ By following this guide, you can have a working NFT marketplace live on the Stac
    npm install
    cp .env.example .env
    ```
+
    Add your Hiro Platform API key to the renamed `.env` file:
+
    ```
    NEXT_PUBLIC_PLATFORM_HIRO_API_KEY=your-api-key-here
    ```
 
 3. **Start the Frontend Application**
-   
+
    Start the Next.js application from the front-end directory.
+
    ```bash
    npm run dev
    ```
+
    Visit [http://localhost:3000](http://localhost:3000) to view and interact with the marketplace. If Devnet is running, your test wallets will already be funded and connected for testing.
 
 ## Testing with Devnet
@@ -92,6 +97,7 @@ With Devnet running, you can test your front-end functionality and validate that
 You do not need to restart Devnet to test changes to your front-end.
 
 ## Next Steps
+
 Once you've thoroughly tested your dApp in Devnet and are confident in its functionality, you can proceed to testing on the Stacks Testnet before launching on Mainnet.
 
 ### Moving to Testnet
@@ -112,4 +118,3 @@ When you're ready to launch your NFT marketplace officially:
 5. Launch your application and begin processing real transactions!
 
 Remember: Mainnet deployments are permanent and involve real cryptocurrency transactions. Double-check all contract code and frontend integrations before deploying to Mainnet.
-

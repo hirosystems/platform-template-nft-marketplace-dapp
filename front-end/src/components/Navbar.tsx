@@ -4,9 +4,9 @@ import { Box, Button, Container, Flex, Link } from "@chakra-ui/react";
 import { useContext } from "react";
 import HiroWalletContext from "./HiroWalletProvider";
 import { showConnect } from "@stacks/connect";
-import { isDevnetEnvironment } from '@/lib/contract-utils';
-import { useDevnetWallet } from '@/lib/devnet-wallet-context';
-import { DevnetWalletButton } from './DevnetWalletButton';
+import { isDevnetEnvironment } from "@/lib/contract-utils";
+import { useDevnetWallet } from "@/lib/devnet-wallet-context";
+import { DevnetWalletButton } from "./DevnetWalletButton";
 
 export const Navbar = () => {
   const { isWalletConnected } = useContext(HiroWalletContext);
@@ -41,14 +41,6 @@ export const Navbar = () => {
             </Link>
           </Flex>
           <Flex align="center" gap={4}>
-            <Link href="/marketplace/list">
-              <Box>
-                <Box as="span" mr={2}>
-                  +
-                </Box>
-                Create
-              </Box>
-            </Link>
             <Link href="/my-nfts">
               <Box>My NFTs</Box>
             </Link>

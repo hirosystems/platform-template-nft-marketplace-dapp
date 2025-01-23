@@ -1,11 +1,11 @@
-import { 
-  listAsset, 
-  cancelListing, 
+import {
+  listAsset,
+  cancelListing,
   purchaseListingStx,
-  ListAssetParams 
+  ListAssetParams
 } from './operations';
-import { 
-  AnchorMode, 
+import {
+  AnchorMode,
   PostConditionMode,
   uintCV,
   principalCV,
@@ -17,11 +17,12 @@ import { MARKETPLACE_CONTRACT } from '@/constants/marketplace';
 
 describe('Marketplace Operations', () => {
   const mockNftContract = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
-  
+
   describe('listAsset', () => {
     it('should create correct contract call options for listing without taker', async () => {
       const params: ListAssetParams = {
-        nftContract: mockNftContract,
+        nftContractAddress: mockNftContract,
+        nftContractName: 'nft-marketplace',
         tokenId: 1,
         price: 100,
         expiry: 1000,

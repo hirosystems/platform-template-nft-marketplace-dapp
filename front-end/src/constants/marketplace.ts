@@ -1,5 +1,7 @@
+import { devnetWallets } from "@/lib/devnet-wallet-context";
+
 export const MARKETPLACE_CONTRACT = {
-  address: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
+  address: devnetWallets[0].stxAddress,
   name: "nft-marketplace"
 } as const;
 

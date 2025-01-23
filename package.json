@@ -1,0 +1,19 @@
+{
+  "name": "nft-marketplace-dapp",
+  "private": true,
+  "workspaces": [
+    "clarity",
+    "front-end"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "test:reports": "turbo run test:reports",
+    "test:watch": "turbo run test:watch"
+  },
+  "devDependencies": {
+    "turbo": "^1.11.3"
+  }
+}

@@ -1,11 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import {
   Container,
   SimpleGrid,
   VStack,
-  useColorMode,
   Text,
   Center,
   Spinner,
@@ -13,19 +11,13 @@ import {
 import { NftCard } from "@/components/marketplace/NftCard";
 import { useNftHoldings } from "@/hooks/useNftHoldings";
 import { useDevnetWallet } from "@/lib/devnet-wallet-context";
-import { cvToJSON, cvToString } from "@stacks/transactions";
 import { formatValue } from "@/lib/clarity-utils";
 
 export default function MyNFTsPage() {
-  const { setColorMode } = useColorMode();
   const { currentWallet } = useDevnetWallet();
   const { data: nftHoldings, isLoading: nftHoldingsLoading } = useNftHoldings(
     currentWallet?.stxAddress || ""
   );
-
-  useEffect(() => {
-    setColorMode("light");
-  }, []);
 
   if (!currentWallet) {
     return (
@@ -55,17 +47,17 @@ export default function MyNFTsPage() {
                 key={holding.asset_identifier}
                 nft={{
                   nftAssetContract: holding.asset_identifier.split("::")[0],
-                  tokenId: +formatValue(
-                    holding.value.hex,
-                    holding.value.hex
-                  ).replace("u", ""),
+                  tokenId: +formatValue(holding.value.hex).replace("u", ""),
                 }}
               />
             ))}
           </SimpleGrid>
         ) : (
           <Center h="30vh">
-            <Text>You don't own any NFTs yet</Text>
+            <Text>
+              You don't own any NFTs yet. You need to mint some first before you
+              can list them!
+            </Text>
           </Center>
         )}
       </VStack>

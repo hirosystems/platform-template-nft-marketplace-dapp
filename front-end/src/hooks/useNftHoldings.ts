@@ -4,26 +4,27 @@ import { TransactionsApi } from '@stacks/blockchain-api-client';
 import { getApi } from '@/lib/stacks-api';
 import { DEVNET_STACKS_BLOCKCHAIN_API_URL } from '@/constants/devnet';
 
+// Custom hook to fetch NFT holdings for a given address
 export const useNftHoldings = (
   address?: string,
-  options: any = {}
 ): UseQueryResult<NonFungibleTokenHoldingsList> => {
   const api = getApi(DEVNET_STACKS_BLOCKCHAIN_API_URL).nonFungibleTokensApi;
-  return useQuery({
+  return useQuery<NonFungibleTokenHoldingsList>({
     queryKey: ['nftHoldings', address],
     queryFn: async () => {
       if (!address) throw new Error('Address is required');
-      return api.getNftHoldings({
+      const response = await api.getNftHoldings({
         principal: address,
         limit: 200,
       });
+      return response as unknown as NonFungibleTokenHoldingsList;
     },
     enabled: !!address,
-    ...options,
+    retry: false,
   });
 };
 
-// query given a txId fetched until it's confirmed
+// Continuously query a transaction by txId until it is confirmed
 export const useGetTxId = (api: TransactionsApi, txId: string) => {
   return useQuery({
     queryKey: ['nftHoldingsByTxId', txId],
@@ -33,9 +34,10 @@ export const useGetTxId = (api: TransactionsApi, txId: string) => {
     },
     enabled: !!txId,
     refetchInterval: (data) => {
-      // @ts-ignore
+      // @ts-expect-error
       return data?.tx_status === "pending" ? 5000 : false;
     },
+    retry: false,
     refetchIntervalInBackground: true,
   });
 };

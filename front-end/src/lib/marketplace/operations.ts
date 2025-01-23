@@ -1,6 +1,6 @@
 import { ContractCallRegularOptions } from '@stacks/connect';
-import { 
-  AnchorMode, 
+import {
+  AnchorMode,
   PostConditionMode,
   uintCV,
   principalCV,
@@ -10,7 +10,6 @@ import {
   tupleCV,
   cvToValue,
   fetchCallReadOnlyFunction,
-  cvToJSON,
   deserializeCV,
   cvToString,
 } from '@stacks/transactions';
@@ -55,7 +54,7 @@ export const listAsset = (params: ListAssetParams): ContractCallRegularOptions =
 };
 
 export const cancelListing = async (
-  listingId: number, 
+  listingId: number,
   nftContract: string
 ): Promise<ContractCallRegularOptions> => {
   return {
@@ -97,39 +96,6 @@ export interface Listing {
   paymentAssetContract: string | null;
 }
 
-const mockListings: Listing[] = [
-  {
-    id: 0,
-    maker: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
-    taker: null,
-    tokenId: 1,
-    nftAssetContract: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.funny-dog",
-    expiry: 100000,
-    price: 10,
-    paymentAssetContract: null,
-  },
-  {
-    id: 1,
-    maker: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
-    taker: null,
-    tokenId: 2,
-    nftAssetContract: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.funny-dog",
-    expiry: 100000,
-    price: 10,
-    paymentAssetContract: null,
-  },
-  {
-    id: 2,
-    maker: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
-    taker: null,
-    tokenId: 3,
-    nftAssetContract: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.funny-dog",
-    expiry: 100000,
-    price: 10,
-    paymentAssetContract: null,
-  }
-
-];
 
 export interface ReadOnlyResponse {
   okay: boolean;
@@ -154,7 +120,7 @@ export const fetchListings = async (maxId: number = 10): Promise<Listing[]> => {
         functionName: 'get-listing',
         functionArgs: [uintCV(currentId)],
         senderAddress: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-        client: { baseUrl: DEVNET_STACKS_BLOCKCHAIN_API_URL},
+        client: { baseUrl: DEVNET_STACKS_BLOCKCHAIN_API_URL },
       });
       console.log('Response:', response);
 
