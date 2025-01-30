@@ -1,0 +1,17 @@
+{
+  "title": "NFT Marketplace dApp",
+  "description": "A full-featured NFT marketplace with minting and trading capabilities built with Clarity smart contracts and Next.js frontend",
+  "type": "dapp",
+  "framework": "clarity, next.js, react.js",
+  "useCase": "nft marketplace",
+  "complexity": "intermediate",
+  "tags": [
+    "nft",
+    "marketplace",
+    "web3",
+    "smart-contract",
+    "stacks",
+    "clarity",
+    "next.js"
+  ]
+}
