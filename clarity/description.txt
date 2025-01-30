@@ -1,1 +1,1 @@
-A simple NFT marketplace implementation to list NFTs for sales.
+A simple NFT marketplace implementation to list NFTs for sale.

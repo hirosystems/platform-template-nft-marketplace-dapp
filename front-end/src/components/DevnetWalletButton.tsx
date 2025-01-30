@@ -17,7 +17,7 @@ export const DevnetWalletButton = ({ currentWallet, wallets, onWalletSelect }: D
     <Menu>
       <Flex align="center">
         <Link
-          href={`http://explorer.hiro.so/address/${currentWallet?.stxAddress}?chain=testnet&api=${DEVNET_STACKS_BLOCKCHAIN_API_URL}`}
+          href={`https://explorer.hiro.so/address/${currentWallet?.stxAddress}?chain=testnet&api=${DEVNET_STACKS_BLOCKCHAIN_API_URL}`}
           target="_blank"
           _hover={{ textDecoration: "none" }}
         >

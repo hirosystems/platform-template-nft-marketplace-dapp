@@ -54,7 +54,7 @@
 )
 
 ;; Only the contract owner of this (marketplace) contract can whitelist an asset contract.
-(define-public (set-whitelisted (asset-contract principal) (whitelisted bool))
+(define-public (set-hitelisted (asset-contract principal) (whitelisted bool))
   (begin
     (asserts! (is-eq contract-owner tx-sender) ERR_UNAUTHORISED)
     (ok (map-set whitelisted-asset-contracts asset-contract whitelisted))
@@ -167,7 +167,7 @@
 )
   (begin
     ;; Verify that the buyer is not the same as the NFT creator
-    ;; (asserts! (not (is-eq (get maker listing) tx-sender)) ERR_MAKER_TAKER_EQUAL)
+    (asserts! (not (is-eq (get maker listing) tx-sender)) ERR_MAKER_TAKER_EQUAL)
     ;; Verify the buyer has been set in the listing metadata as its `taker`
     (asserts!
       (match (get taker listing) intended-taker (is-eq intended-taker tx-sender) true)
