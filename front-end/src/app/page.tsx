@@ -65,7 +65,7 @@ export default function BrowsePage() {
               <Text fontSize="xl">No NFTs listed yet</Text>
               <Button
                 as="a"
-                href="/marketplace/list"
+                href="/my-nfts"
                 colorScheme="blue"
                 size="lg"
                 px={8}
