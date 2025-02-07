@@ -1,21 +1,38 @@
 {
-  "name": "Clarity Development Environment",
-  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-20-bullseye",
-
-  "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
-  },
-
-  "customizations": {
-    "vscode": {
-      "extensions": ["hirosystems.clarity-lsp"],
-      "settings": {
-        "terminal.integrated.defaultProfile.linux": "bash"
-      }
+    "build": {
+        "dockerfile": "./Dockerfile",
+        "context": "."
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            "username": "codespace",
+            "userUid": "1000",
+            "userGid": "1000"
+        },
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "20"
+        },
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+        "ghcr.io/devcontainers/features/git:1": {
+            "version": "latest",
+            "ppa": "false"
+        },
+        "ghcr.io/devcontainers/features/github-cli:1": {
+            "version": "latest"
+        }
+    },
+    "remoteUser": "codespace",
+    "containerUser": "codespace",
+    
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "hirosystems.clarity-lsp",
+                "GitHub.vscode-pull-request-github"
+            ],
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash"
+            }
+        }
     }
-  },
-
-  "postCreateCommand": "curl -sS -o- https://raw.githubusercontent.com/hirosystems/clarinet/main/install.sh | sh",
-
-  "remoteUser": "node"
 }
