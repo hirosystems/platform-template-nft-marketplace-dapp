@@ -1,6 +1,6 @@
 "use client";
 
-import { openContractCall } from "@stacks/connect";
+import { openContractCall } from "@/lib/contract-utils";
 import { CardFooter, Heading, Stack, CardBody, Card, useToast, Button, Text, Image, Box, Flex } from "@chakra-ui/react";
 import { cancelListing, purchaseListingStx } from "@/lib/marketplace/operations";
 import { useContext, useState, useEffect } from "react";

@@ -1,9 +1,8 @@
 "use client";
 
 import { Box, Button, Container, Flex, Link } from "@chakra-ui/react";
-import { useContext } from "react";
+import { useContext, useCallback } from "react";
 import HiroWalletContext from "./HiroWalletProvider";
-import { showConnect } from "@stacks/connect";
 import { isDevnetEnvironment } from "@/lib/contract-utils";
 import { useDevnetWallet } from "@/lib/devnet-wallet-context";
 import { DevnetWalletButton } from "./DevnetWalletButton";
@@ -11,6 +10,28 @@ import { DevnetWalletButton } from "./DevnetWalletButton";
 export const Navbar = () => {
   const { isWalletConnected } = useContext(HiroWalletContext);
   const { currentWallet, wallets, setCurrentWallet } = useDevnetWallet();
+
+  const handleConnect = useCallback(async () => {
+    if (!isWalletConnected) {
+      try {
+        const { showConnect } = await import("@stacks/connect");
+        showConnect({
+          appDetails: {
+            name: "NFT Marketplace",
+            icon: "https://freesvg.org/img/1541103084.png",
+          },
+          onFinish: () => {
+            window.location.reload();
+          },
+          onCancel: () => {
+            console.log("popup closed!");
+          },
+        });
+      } catch (error) {
+        console.error("Failed to load @stacks/connect:", error);
+      }
+    }
+  }, [isWalletConnected]);
 
   return (
     <Box as="nav" bg="white" boxShadow="sm">
@@ -51,24 +72,7 @@ export const Navbar = () => {
                 onWalletSelect={setCurrentWallet}
               />
             ) : (
-              <Button
-                onClick={() => {
-                  if (!isWalletConnected) {
-                    showConnect({
-                      appDetails: {
-                        name: "NFT Marketplace",
-                        icon: "https://freesvg.org/img/1541103084.png",
-                      },
-                      onFinish: () => {
-                        window.location.reload();
-                      },
-                      onCancel: () => {
-                        console.log("popup closed!");
-                      },
-                    });
-                  }
-                }}
-              >
+              <Button onClick={handleConnect}>
                 {isWalletConnected ? "Connected" : "Connect Wallet"}
               </Button>
             )}

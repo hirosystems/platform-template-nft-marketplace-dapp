@@ -1,5 +1,5 @@
 import { DEVNET_NETWORK } from '@/constants/devnet';
-import { ContractCallRegularOptions } from '@stacks/connect';
+import { ContractCallRegularOptions as ContractCallRegularOptionsType } from '@stacks/connect';
 import {
   makeContractCall,
   broadcastTransaction,
@@ -11,6 +11,8 @@ import {
 } from '@stacks/transactions';
 import { generateWallet } from '@stacks/wallet-sdk';
 import { DevnetWallet } from './devnet-wallet-context';
+
+export type ContractCallRegularOptions = ContractCallRegularOptionsType;
 
 interface DirectCallResponse {
   txid: string;
@@ -56,4 +58,14 @@ export const executeContractCall = async (
   }
 
   return { txid: response.txid };
+};
+
+export const openContractCall = async (options: ContractCallRegularOptions) => {
+  try {
+    const { openContractCall: stacksOpenContractCall } = await import('@stacks/connect');
+    return stacksOpenContractCall(options);
+  } catch (error) {
+    console.error('Failed to load @stacks/connect:', error);
+    throw error;
+  }
 };

@@ -18,9 +18,8 @@ import {
 import { formatContractName } from "@/utils/formatting";
 import { getPlaceholderImage } from "@/utils/nft-utils";
 import { useState } from "react";
-import { openContractCall } from "@stacks/connect";
 import { listAsset } from "@/lib/marketplace/operations";
-import { shouldUseDirectCall, executeContractCall } from "@/lib/contract-utils";
+import { shouldUseDirectCall, executeContractCall, openContractCall } from "@/lib/contract-utils";
 import { storeTxid } from "@/utils/localStorageUtils";
 import { useDevnetWallet } from "@/lib/devnet-wallet-context";
 import { useRouter } from "next/navigation";

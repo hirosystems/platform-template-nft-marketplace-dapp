@@ -1,4 +1,4 @@
-import { ContractCallRegularOptions } from '@stacks/connect';
+import { ContractCallRegularOptions } from '@/lib/contract-utils';
 import {
   AnchorMode,
   PostConditionMode,
