@@ -2,13 +2,13 @@ import { UseQueryResult, useQuery } from '@tanstack/react-query';
 import { NonFungibleTokenHoldingsList } from '@stacks/stacks-blockchain-api-types';
 import { TransactionsApi } from '@stacks/blockchain-api-client';
 import { getApi } from '@/lib/stacks-api';
-import { DEVNET_STACKS_BLOCKCHAIN_API_URL } from '@/constants/devnet';
 
 // Custom hook to fetch NFT holdings for a given address
 export const useNftHoldings = (
   address?: string,
 ): UseQueryResult<NonFungibleTokenHoldingsList> => {
-  const api = getApi(DEVNET_STACKS_BLOCKCHAIN_API_URL).nonFungibleTokensApi;
+  const api = getApi().nonFungibleTokensApi;
+
   return useQuery<NonFungibleTokenHoldingsList>({
     queryKey: ['nftHoldings', address],
     queryFn: async () => {
@@ -21,6 +21,9 @@ export const useNftHoldings = (
     },
     enabled: !!address,
     retry: false,
+    // Refetch every 10 seconds and whenever the window regains focus
+    refetchInterval: 10000,
+    refetchOnWindowFocus: true,
   });
 };
 

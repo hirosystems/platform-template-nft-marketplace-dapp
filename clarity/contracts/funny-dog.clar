@@ -9,7 +9,7 @@
 
 ;; Define constants
 (define-constant CONTRACT_OWNER tx-sender)
-(define-constant COLLECTION_LIMIT u1000) ;; Limit to series of 1000
+(define-constant COLLECTION_LIMIT u10000000) ;; Limit to series of 10M
 
 (define-constant ERR_OWNER_ONLY (err u100))
 (define-constant ERR_NOT_TOKEN_OWNER (err u101))

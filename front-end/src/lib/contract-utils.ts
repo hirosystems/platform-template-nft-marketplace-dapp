@@ -1,3 +1,4 @@
+import { networkFromName } from '@stacks/network';
 import { DEVNET_NETWORK } from '@/constants/devnet';
 import { ContractCallRegularOptions as ContractCallRegularOptionsType } from '@stacks/connect';
 import {
@@ -20,6 +21,15 @@ interface DirectCallResponse {
 
 export const isDevnetEnvironment = () =>
   process.env.NEXT_PUBLIC_STACKS_NETWORK === 'devnet';
+
+export const isTestnetEnvironment = () =>
+  process.env.NEXT_PUBLIC_STACKS_NETWORK === 'testnet';
+
+export const getNetwork = () => {
+  if (isDevnetEnvironment()) return networkFromName('devnet');
+  if (isTestnetEnvironment()) return networkFromName('testnet');
+  return networkFromName('mainnet');
+};
 
 export const shouldUseDirectCall = (wallet: DevnetWallet | null) =>
   isDevnetEnvironment() && !!wallet?.mnemonic;

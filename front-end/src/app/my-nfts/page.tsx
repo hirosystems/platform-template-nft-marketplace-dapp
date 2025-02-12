@@ -7,17 +7,47 @@ import {
   Text,
   Center,
   Spinner,
+  Button,
+  useToast,
 } from "@chakra-ui/react";
 import { NftCard } from "@/components/marketplace/NftCard";
 import { useNftHoldings } from "@/hooks/useNftHoldings";
 import { useDevnetWallet } from "@/lib/devnet-wallet-context";
 import { formatValue } from "@/lib/clarity-utils";
+import { isTestnetEnvironment } from "@/lib/contract-utils";
+import { mintFunnyDogNFT } from "@/lib/nft/operations";
 
 export default function MyNFTsPage() {
   const { currentWallet } = useDevnetWallet();
   const { data: nftHoldings, isLoading: nftHoldingsLoading } = useNftHoldings(
     currentWallet?.stxAddress || ""
   );
+  const toast = useToast();
+
+  const handleMintNFT = async () => {
+    if (!currentWallet?.stxAddress) return;
+
+    try {
+      const txId = await mintFunnyDogNFT(currentWallet.stxAddress);
+      toast({
+        title: "NFT Minting Started",
+        description:
+          "Your NFT is being minted. This process may take a few minutes.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      console.log("minted", txId);
+    } catch (error) {
+      toast({
+        title: "Minting Failed",
+        description: "There was an error minting your NFT",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
 
   if (!currentWallet) {
     return (
@@ -53,11 +83,16 @@ export default function MyNFTsPage() {
             ))}
           </SimpleGrid>
         ) : (
-          <Center h="30vh">
+          <Center h="30vh" flexDirection="column" gap={4}>
             <Text>
               You don't own any NFTs yet. You need to mint some first before you
               can list them!
             </Text>
+            {isTestnetEnvironment() && (
+              <Button colorScheme="blue" onClick={handleMintNFT}>
+                Mint Funny Dog NFT
+              </Button>
+            )}
           </Center>
         )}
       </VStack>

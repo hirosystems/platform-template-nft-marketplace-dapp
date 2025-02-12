@@ -1,3 +1,4 @@
+import { DEVNET_STACKS_BLOCKCHAIN_API_URL } from '@/constants/devnet';
 import {
   Configuration,
   SmartContractsApi,
@@ -14,6 +15,7 @@ import {
   NonFungibleTokensApi,
   ConfigurationParameters,
 } from '@stacks/blockchain-api-client';
+import { isDevnetEnvironment, isTestnetEnvironment } from './contract-utils';
 
 type HTTPHeaders = Record<string, string>;
 
@@ -57,7 +59,18 @@ export function apiClients(config: Configuration) {
   };
 }
 
-export const getApi = (stacksApiUrl: string, headers?: HTTPHeaders) => {
-  const config = createConfig(stacksApiUrl, headers);
+export function getApiUrl() {
+  if (isDevnetEnvironment()) {
+    return DEVNET_STACKS_BLOCKCHAIN_API_URL || 'http://localhost:3999';
+  }
+  if (isTestnetEnvironment()) {
+    return 'https://api.testnet.hiro.so';
+  }
+  return 'https://api.mainnet.hiro.so';
+}
+
+export function getApi(stacksApiUrl?: string, headers?: HTTPHeaders) {
+  const apiUrl = stacksApiUrl || getApiUrl();
+  const config = createConfig(apiUrl, headers);
   return apiClients(config);
-}; 
+}
