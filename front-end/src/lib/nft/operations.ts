@@ -4,6 +4,7 @@ import { FUNNY_DOG_CONTRACT } from "@/constants/contracts";
 import { getNetwork } from "@/lib/contract-utils";
 
 export const mintFunnyDogNFT = async (recipientAddress: string): Promise<string> => {
+  const { openContractCall } = await import("@stacks/connect");
   const functionArgs = [stringAsciiCV(recipientAddress)];
   
   return new Promise((resolve, reject) => {
