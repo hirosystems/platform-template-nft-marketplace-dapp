@@ -1,5 +1,6 @@
 ;; This contract implements the SIP-009 community-standard Non-Fungible Token trait
 (impl-trait 'SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9.nft-trait.nft-trait)
+;; (impl-trait 'STM6S3AESTK9NAYE3Z7RS00T11ER8JJCDNTKG711.nft-trait.nft-trait)
 
 ;; Define the NFT's name
 (define-non-fungible-token funny-dog uint)
@@ -15,7 +16,7 @@
 (define-constant ERR_NOT_TOKEN_OWNER (err u101))
 (define-constant ERR_SOLD_OUT (err u300))
 
-(define-data-var base-uri (string-ascii 80) "https://your.api.com/path/to/collection/{id}")
+(define-data-var base-uri (string-ascii 80) "https://placedog.net/500/500?id={id}")
 
 ;; SIP-009 function: Get the last minted token ID.
 (define-read-only (get-last-token-id)
@@ -48,7 +49,7 @@
     ;; Ensure the collection stays within the limit.
     (asserts! (< (var-get last-token-id) COLLECTION_LIMIT) ERR_SOLD_OUT)
     ;; Only the contract owner can mint.
-    (asserts! (is-eq tx-sender CONTRACT_OWNER) ERR_OWNER_ONLY)
+    ;; (asserts! (is-eq tx-sender CONTRACT_OWNER) ERR_OWNER_ONLY)
     ;; Mint the NFT and send it to the given recipient.
     (try! (nft-mint? funny-dog token-id recipient))
 

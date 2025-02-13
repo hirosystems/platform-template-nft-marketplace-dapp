@@ -7,8 +7,9 @@
 ;;
 ;; Source: https://github.com/clarity-lang/book/tree/main/projects/tiny-market
 
-(use-trait nft-trait 'SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9.nft-trait.nft-trait)
-(use-trait ft-trait  'SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-trait-ft-standard.sip-010-trait)
+
+(use-trait nft-trait 'STM6S3AESTK9NAYE3Z7RS00T11ER8JJCDNTKG711.nft-trait.nft-trait)
+(use-trait ft-trait  'STM6S3AESTK9NAYE3Z7RS00T11ER8JJCDNTKG711.sip-010-trait.sip-010-trait)
 
 (define-constant contract-owner tx-sender)
 
@@ -54,7 +55,7 @@
 )
 
 ;; Only the contract owner of this (marketplace) contract can whitelist an asset contract.
-(define-public (set-hitelisted (asset-contract principal) (whitelisted bool))
+(define-public (set-whitelisted (asset-contract principal) (whitelisted bool))
   (begin
     (asserts! (is-eq contract-owner tx-sender) ERR_UNAUTHORISED)
     (ok (map-set whitelisted-asset-contracts asset-contract whitelisted))
@@ -94,9 +95,9 @@
 )
   (let ((listing-id (var-get listing-nonce)))
     ;; Verify that the contract of this asset is whitelisted
-    (asserts! (is-whitelisted (contract-of nft-asset-contract)) ERR_ASSET_CONTRACT_NOT_WHITELISTED)
+    ;; (asserts! (is-whitelisted (contract-of nft-asset-contract)) ERR_ASSET_CONTRACT_NOT_WHITELISTED)
     ;; Verify that the asset is not expired
-    (asserts! (> (get expiry nft-asset) burn-block-height) ERR_EXPIRY_IN_PAST)
+    ;; (asserts! (> (get expiry nft-asset) burn-block-height) ERR_EXPIRY_IN_PAST)
     ;; Verify that the asset price is greater than zero
     (asserts! (> (get price nft-asset) u0) ERR_PRICE_ZERO)
     ;; Verify that the contract of the payment is whitelisted

@@ -5,10 +5,12 @@ import {
   Flex,
   Icon,
   Text,
+  Tooltip,
+  IconButton,
 } from "@chakra-ui/react";
 import { useContext, useState } from "react";
-import HiroWalletContext from "./HiroWalletProvider";
-import { RiFileCopyLine } from "react-icons/ri";
+import { HiroWalletContext } from "./HiroWalletProvider";
+import { RiFileCopyLine, RiCloseLine } from "react-icons/ri";
 
 interface ConnectWalletButtonProps {
   children?: React.ReactNode;
@@ -18,12 +20,20 @@ interface ConnectWalletButtonProps {
 export const ConnectWalletButton = (buttonProps: ConnectWalletButtonProps) => {
   const { children } = buttonProps;
   const [didCopyAddress, setDidCopyAddress] = useState(false);
-  const { authenticate, isWalletConnected, mainnetAddress, disconnect } =
-    useContext(HiroWalletContext);
+  const { 
+    authenticate, 
+    isWalletConnected, 
+    mainnetAddress, 
+    testnetAddress,
+    network,
+    disconnect 
+  } = useContext(HiroWalletContext);
+
+  const currentAddress = network === "mainnet" ? mainnetAddress : testnetAddress;
 
   const copyAddress = () => {
-    if (mainnetAddress) {
-      navigator.clipboard.writeText(mainnetAddress);
+    if (currentAddress) {
+      navigator.clipboard.writeText(currentAddress);
       setDidCopyAddress(true);
       setTimeout(() => {
         setDidCopyAddress(false);
@@ -32,25 +42,39 @@ export const ConnectWalletButton = (buttonProps: ConnectWalletButtonProps) => {
   };
 
   const truncateMiddle = (str: string | null) => {
-    if (!str) return '';
+    if (!str) return "";
     if (str.length <= 12) return str;
     return `${str.slice(0, 6)}...${str.slice(-4)}`;
   };
 
   return isWalletConnected ? (
-    <Flex direction="column" gap={2}>
-      <Flex gap="1.5" align="center">
-        <Text color="gray.300">Connected:</Text>
-        <Box>{truncateMiddle(mainnetAddress)}</Box>
-      </Flex>
-
-      <Button
-        size="sm"
-        onClick={disconnect}
-        data-testid="disconnect-wallet-address-button"
-      >
-        Disconnect
-      </Button>
+    <Flex align="center" gap={2} p={2} borderRadius="md" bg="gray.200">
+      <Text color="gray.800" fontSize="sm">
+        {truncateMiddle(currentAddress)}
+      </Text>
+      <Tooltip label="Copy address" isOpen={didCopyAddress ? true : undefined}>
+        <IconButton
+          aria-label="Copy address"
+          icon={<Icon as={RiFileCopyLine} />}
+          size="sm"
+          variant="ghost"
+          onClick={copyAddress}
+          minW="8"
+          p="1"
+        />
+      </Tooltip>
+      <Tooltip label="Disconnect wallet">
+        <IconButton
+          aria-label="Disconnect wallet"
+          icon={<Icon as={RiCloseLine} />}
+          size="sm"
+          variant="ghost"
+          onClick={disconnect}
+          data-testid="disconnect-wallet-address-button"
+          minW="8"
+          p="1"
+        />
+      </Tooltip>
     </Flex>
   ) : (
     <Button
@@ -59,9 +83,7 @@ export const ConnectWalletButton = (buttonProps: ConnectWalletButtonProps) => {
       data-testid="wallet-connect-button"
       {...buttonProps}
     >
-      <Flex gap="2" align="center">
-        {children || "Connect Wallet"}
-      </Flex>
+      {children || "Connect Wallet"}
     </Button>
   );
 };

@@ -9,26 +9,37 @@ import {
   Spinner,
   Button,
   useToast,
+  Link,
+  Box,
+  Image,
 } from "@chakra-ui/react";
 import { NftCard } from "@/components/marketplace/NftCard";
 import { useNftHoldings } from "@/hooks/useNftHoldings";
-import { useDevnetWallet } from "@/lib/devnet-wallet-context";
 import { formatValue } from "@/lib/clarity-utils";
-import { isTestnetEnvironment } from "@/lib/contract-utils";
 import { mintFunnyDogNFT } from "@/lib/nft/operations";
+import { isTestnetEnvironment, useNetwork } from "@/lib/use-network";
+import { useCurrentAddress } from "@/hooks/useCurrentAddress";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
+import { useState } from "react";
 
 export default function MyNFTsPage() {
-  const { currentWallet } = useDevnetWallet();
+  const [lastTxId, setLastTxId] = useState<string | null>(null);
+  const currentAddress = useCurrentAddress();
+  console.log("currentAddress", currentAddress);
+  const network = useNetwork();
   const { data: nftHoldings, isLoading: nftHoldingsLoading } = useNftHoldings(
-    currentWallet?.stxAddress || ""
+    network,
+    currentAddress || ""
   );
-  const toast = useToast();
 
+  const toast = useToast();
+  const isTestnet = isTestnetEnvironment(network);
   const handleMintNFT = async () => {
-    if (!currentWallet?.stxAddress) return;
+    if (!currentAddress) return;
 
     try {
-      const txId = await mintFunnyDogNFT(currentWallet.stxAddress);
+      const txId = await mintFunnyDogNFT(network, currentAddress);
+      setLastTxId(txId);
       toast({
         title: "NFT Minting Started",
         description:
@@ -49,7 +60,56 @@ export default function MyNFTsPage() {
     }
   };
 
-  if (!currentWallet) {
+  const MintCard = () => (
+    <Box
+      borderWidth="1px"
+      borderRadius="lg"
+      overflow="hidden"
+      bg="white"
+      boxShadow="md"
+    >
+      <Box position="relative" paddingTop="100%">
+        <Center
+          position="absolute"
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          bg="gray.100"
+        >
+        </Center>
+      </Box>
+      <VStack p={4} spacing={3} align="stretch">
+        <Text fontWeight="bold" fontSize="lg">
+          Funny Dog NFT
+        </Text>
+        <Text fontSize="sm" color="gray.600">
+          Mint a new Funny Dog NFT to your collection
+        </Text>
+        <Button
+          colorScheme="blue"
+          onClick={handleMintNFT}
+          width="full"
+          size="sm"
+        >
+          Mint NFT
+        </Button>
+        {lastTxId && (
+          <Link
+            href={`https://explorer.hiro.so/txid/${lastTxId.replace('0x', '')}?chain=${network}`}
+            isExternal
+            color="blue.500"
+            fontSize="sm"
+            textAlign="center"
+          >
+            View transaction in explorer <ExternalLinkIcon mx="2px" />
+          </Link>
+        )}
+      </VStack>
+    </Box>
+  );
+
+  if (!currentAddress) {
     return (
       <Center h="50vh">
         <Text>Please connect your wallet to view your NFTs</Text>
@@ -70,9 +130,9 @@ export default function MyNFTsPage() {
         <Text fontSize="2xl" fontWeight="bold">
           My NFTs
         </Text>
-        {nftHoldings?.results && nftHoldings.results.length > 0 ? (
-          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
-            {nftHoldings.results.map((holding) => (
+        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
+          {nftHoldings?.results && nftHoldings.results.length > 0 ? (
+            nftHoldings.results.map((holding) => (
               <NftCard
                 key={holding.asset_identifier}
                 nft={{
@@ -80,21 +140,10 @@ export default function MyNFTsPage() {
                   tokenId: +formatValue(holding.value.hex).replace("u", ""),
                 }}
               />
-            ))}
-          </SimpleGrid>
-        ) : (
-          <Center h="30vh" flexDirection="column" gap={4}>
-            <Text>
-              You don't own any NFTs yet. You need to mint some first before you
-              can list them!
-            </Text>
-            {isTestnetEnvironment() && (
-              <Button colorScheme="blue" onClick={handleMintNFT}>
-                Mint Funny Dog NFT
-              </Button>
-            )}
-          </Center>
-        )}
+            ))
+          ) : null}
+          <MintCard />
+        </SimpleGrid>
       </VStack>
     </Container>
   );

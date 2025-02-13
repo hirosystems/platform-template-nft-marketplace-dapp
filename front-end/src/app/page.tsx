@@ -13,21 +13,24 @@ import { ListingCard } from "@/components/marketplace/ListingCard";
 import { fetchListings, Listing } from "@/lib/marketplace/operations";
 import { useNftHoldings } from "@/hooks/useNftHoldings";
 import { useDevnetWallet } from "@/lib/devnet-wallet-context";
+import { useNetwork } from "@/lib/use-network";
 
 export default function BrowsePage() {
   const [listings, setListings] = useState<Listing[]>([]);
   const [isLoadingListings, setIsLoadingListings] = useState(true);
 
   const { currentWallet } = useDevnetWallet();
+  const network = useNetwork();
   // use useNftHoldings to fetch the NFT holdings
   const { data: nftHoldings, isLoading: nftHoldingsLoading } = useNftHoldings(
+    network,
     currentWallet?.stxAddress || ""
   );
   console.log("nftHoldings", nftHoldings);
 
   const loadListings = async () => {
     setIsLoadingListings(true);
-    const fetchedListings = await fetchListings();
+    const fetchedListings = await fetchListings(network);
     console.log("fetchedListings", fetchedListings);
     setListings(fetchedListings);
     setIsLoadingListings(false);
@@ -35,7 +38,7 @@ export default function BrowsePage() {
 
   useEffect(() => {
     loadListings();
-  }, []);
+  }, [network]);
 
   return (
     <Container maxW="container.xl" py={8}>

@@ -1,10 +1,25 @@
 "use client";
 
 import { openContractCall } from "@/lib/contract-utils";
-import { CardFooter, Heading, Stack, CardBody, Card, useToast, Button, Text, Image, Box, Flex } from "@chakra-ui/react";
-import { cancelListing, purchaseListingStx } from "@/lib/marketplace/operations";
+import {
+  CardFooter,
+  Heading,
+  Stack,
+  CardBody,
+  Card,
+  useToast,
+  Button,
+  Text,
+  Image,
+  Box,
+  Flex,
+} from "@chakra-ui/react";
+import {
+  cancelListing,
+  purchaseListingStx,
+} from "@/lib/marketplace/operations";
 import { useContext, useState, useEffect } from "react";
-import HiroWalletContext from "../HiroWalletProvider";
+import { HiroWalletContext } from "../HiroWalletProvider";
 import { useRouter } from "next/navigation";
 import { shouldUseDirectCall } from "@/lib/contract-utils";
 import { executeContractCall } from "@/lib/contract-utils";
@@ -12,8 +27,9 @@ import { useDevnetWallet } from "@/lib/devnet-wallet-context";
 import { getApi } from "@/lib/stacks-api";
 import { DEVNET_STACKS_BLOCKCHAIN_API_URL } from "@/constants/devnet";
 import { useGetTxId } from "@/hooks/useNftHoldings";
-import { formatContractName } from '@/utils/formatting';
+import { formatContractName } from "@/utils/formatting";
 import { getPlaceholderImage } from "@/utils/nft-utils";
+import { useNetwork } from "@/lib/use-network";
 
 interface ListingCardProps {
   listing: {
@@ -35,8 +51,8 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
   const toast = useToast();
   const router = useRouter();
   const [purchaseTxId, setPurchaseTxId] = useState<string | null>(null);
-
-  const api = getApi(DEVNET_STACKS_BLOCKCHAIN_API_URL);
+  const network = useNetwork();
+  const api = getApi(network);
   const { data: txData } = useGetTxId(api.transactionsApi, purchaseTxId || "");
 
   useEffect(() => {
@@ -63,12 +79,13 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
   const handlePurchase = async () => {
     try {
       const txOptions = await purchaseListingStx(
+        network,
         listing.id,
         listing.nftAssetContract
       );
       console.log("txOptions", txOptions);
 
-      if (shouldUseDirectCall(currentWallet)) {
+      if (shouldUseDirectCall(network)) {
         const { txid } = await executeContractCall(txOptions, currentWallet);
         setPurchaseTxId(txid);
         toast({
@@ -112,6 +129,7 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
 
     try {
       const txOptions = await cancelListing(
+        network,
         listing.id,
         listing.nftAssetContract
       );
@@ -200,4 +218,4 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
       </CardFooter>
     </Card>
   );
-}; 
+};

@@ -2,12 +2,14 @@ import { UseQueryResult, useQuery } from '@tanstack/react-query';
 import { NonFungibleTokenHoldingsList } from '@stacks/stacks-blockchain-api-types';
 import { TransactionsApi } from '@stacks/blockchain-api-client';
 import { getApi } from '@/lib/stacks-api';
+import { Network } from '@/components/NetworkSelector';
 
 // Custom hook to fetch NFT holdings for a given address
 export const useNftHoldings = (
+  network: Network,
   address?: string,
 ): UseQueryResult<NonFungibleTokenHoldingsList> => {
-  const api = getApi().nonFungibleTokensApi;
+  const api = getApi(network).nonFungibleTokensApi;
 
   return useQuery<NonFungibleTokenHoldingsList>({
     queryKey: ['nftHoldings', address],

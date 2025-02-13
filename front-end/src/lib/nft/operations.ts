@@ -1,18 +1,18 @@
-import { openContractCall } from "@stacks/connect";
-import { PostConditionMode, stringAsciiCV } from "@stacks/transactions";
-import { FUNNY_DOG_CONTRACT } from "@/constants/contracts";
-import { getNetwork } from "@/lib/contract-utils";
+import { PostConditionMode, principalCV } from "@stacks/transactions";
+import { Network } from "@/components/NetworkSelector";
+import { getNftContract } from "@/constants/contracts";
 
-export const mintFunnyDogNFT = async (recipientAddress: string): Promise<string> => {
+export const mintFunnyDogNFT = async (network: Network, recipientAddress: string): Promise<string> => {
   const { openContractCall } = await import("@stacks/connect");
-  const functionArgs = [stringAsciiCV(recipientAddress)];
-  
+  const recipient = principalCV(recipientAddress);
+  const functionArgs = [recipient];
+  const contract = getNftContract(network);
+
   return new Promise((resolve, reject) => {
     const options = {
-      network: getNetwork(),
+      ...contract,
+      network,
       anchorMode: 1,
-      contractAddress: FUNNY_DOG_CONTRACT.address,
-      contractName: FUNNY_DOG_CONTRACT.name,
       functionName: "mint",
       functionArgs,
       postConditionMode: PostConditionMode.Deny,
@@ -26,6 +26,7 @@ export const mintFunnyDogNFT = async (recipientAddress: string): Promise<string>
       },
     };
 
+    console.log("options", options);
     openContractCall(options).catch(reject);
   });
 };

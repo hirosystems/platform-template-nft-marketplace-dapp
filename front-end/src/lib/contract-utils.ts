@@ -12,6 +12,8 @@ import {
 } from '@stacks/transactions';
 import { generateWallet } from '@stacks/wallet-sdk';
 import { DevnetWallet } from './devnet-wallet-context';
+import { Network } from '@/components/NetworkSelector';
+import { isDevnetEnvironment } from './use-network';
 
 export type ContractCallRegularOptions = ContractCallRegularOptionsType;
 
@@ -19,20 +21,7 @@ interface DirectCallResponse {
   txid: string;
 }
 
-export const isDevnetEnvironment = () =>
-  process.env.NEXT_PUBLIC_STACKS_NETWORK === 'devnet';
-
-export const isTestnetEnvironment = () =>
-  process.env.NEXT_PUBLIC_STACKS_NETWORK === 'testnet';
-
-export const getNetwork = () => {
-  if (isDevnetEnvironment()) return networkFromName('devnet');
-  if (isTestnetEnvironment()) return networkFromName('testnet');
-  return networkFromName('mainnet');
-};
-
-export const shouldUseDirectCall = (wallet: DevnetWallet | null) =>
-  isDevnetEnvironment() && !!wallet?.mnemonic;
+export const shouldUseDirectCall = isDevnetEnvironment
 
 export const executeContractCall = async (
   txOptions: ContractCallRegularOptions,

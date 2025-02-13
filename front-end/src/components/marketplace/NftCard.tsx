@@ -19,10 +19,16 @@ import { formatContractName } from "@/utils/formatting";
 import { getPlaceholderImage } from "@/utils/nft-utils";
 import { useState } from "react";
 import { listAsset } from "@/lib/marketplace/operations";
-import { shouldUseDirectCall, executeContractCall, openContractCall } from "@/lib/contract-utils";
+import {
+  shouldUseDirectCall,
+  executeContractCall,
+  openContractCall,
+} from "@/lib/contract-utils";
 import { storeTxid } from "@/utils/localStorageUtils";
 import { useDevnetWallet } from "@/lib/devnet-wallet-context";
 import { useRouter } from "next/navigation";
+import { useNetwork } from "@/lib/use-network";
+import { useCurrentAddress } from "@/hooks/useCurrentAddress";
 
 interface NftCardProps {
   nft: {
@@ -38,7 +44,13 @@ export const NftCard = ({ nft }: NftCardProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
   const router = useRouter();
+  const currentAddress = useCurrentAddress();
   const { currentWallet } = useDevnetWallet();
+  const network = useNetwork();
+
+  if (!currentAddress) {
+    return null;
+  }
 
   const handleList = async () => {
     if (!price) {
@@ -53,7 +65,7 @@ export const NftCard = ({ nft }: NftCardProps) => {
     setIsLoading(true);
     try {
       const [contractAddress, contractName] = nftAssetContract.split(".");
-      const txOptions = await listAsset({
+      const txOptions = await listAsset(network, {
         nftContractAddress: contractAddress,
         nftContractName: contractName,
         tokenId: tokenId,
@@ -62,7 +74,8 @@ export const NftCard = ({ nft }: NftCardProps) => {
       });
       console.log("txOptions", txOptions);
 
-      if (shouldUseDirectCall(currentWallet)) {
+      if (shouldUseDirectCall(network)) {
+
         const { txid } = await executeContractCall(txOptions, currentWallet);
         storeTxid(txid);
         toast({
@@ -121,6 +134,14 @@ export const NftCard = ({ nft }: NftCardProps) => {
             <Image
               src={getPlaceholderImage(tokenId)}
               alt={`NFT #${tokenId}`}
+              borderRadius="lg"
+              style={{
+                filter: "grayscale(100%) contrast(120%)",
+                transition: "filter 0.3s ease",
+              }}
+              _hover={{
+                filter: "grayscale(0%) contrast(100%)",
+              }}
               width="100%"
               height="100%"
               objectFit="cover"

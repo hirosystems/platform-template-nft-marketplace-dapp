@@ -13,15 +13,14 @@ import {
   noneCV,
   contractPrincipalCV
 } from '@stacks/transactions';
-import { MARKETPLACE_CONTRACT } from '@/constants/marketplace';
+import { getMarketplaceContractAddress, getNftContractAddress, MARKETPLACE_CONTRACT } from '@/constants/contracts';
 
 describe('Marketplace Operations', () => {
-  const mockNftContract = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
 
   describe('listAsset', () => {
     it('should create correct contract call options for listing without taker', async () => {
       const params: ListAssetParams = {
-        nftContractAddress: mockNftContract,
+        nftContractAddress: getNftContractAddress(),
         nftContractName: 'nft-marketplace',
         tokenId: 1,
         price: 100,
@@ -37,7 +36,7 @@ describe('Marketplace Operations', () => {
         contractName: MARKETPLACE_CONTRACT.name,
         functionName: 'list-asset',
         functionArgs: [
-          contractPrincipalCV(mockNftContract, 'nft-trait'),
+          contractPrincipalCV(getNftContractAddress(), 'nft-trait'),
           {
             tokenId: uintCV(1),
             price: uintCV(100),
@@ -52,7 +51,8 @@ describe('Marketplace Operations', () => {
 
     it('should create correct contract call options with intended taker', async () => {
       const params: ListAssetParams = {
-        nftContract: mockNftContract,
+        nftContractAddress: getMarketplaceContractAddress(),
+        nftContractName: 'nft-marketplace',
         tokenId: 1,
         price: 100,
         expiry: 1000,

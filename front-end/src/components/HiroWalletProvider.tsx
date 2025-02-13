@@ -8,13 +8,14 @@ import {
   useMemo,
   useState,
 } from "react";
-import dynamic from "next/dynamic";
 
 interface HiroWallet {
   isWalletOpen: boolean;
   isWalletConnected: boolean;
   testnetAddress: string | null;
   mainnetAddress: string | null;
+  network: "mainnet" | "testnet" | "devnet";
+  setNetwork: (network: "mainnet" | "testnet" | "devnet") => void;
   authenticate: () => void;
   disconnect: () => void;
 }
@@ -24,10 +25,11 @@ const HiroWalletContext = createContext<HiroWallet>({
   isWalletConnected: false,
   testnetAddress: null,
   mainnetAddress: null,
-  authenticate: () => { },
-  disconnect: () => { },
+  network: "mainnet",
+  setNetwork: () => {},
+  authenticate: () => {},
+  disconnect: () => {},
 });
-export default HiroWalletContext;
 
 interface ProviderProps {
   children: ReactNode | ReactNode[];
@@ -39,20 +41,23 @@ export const HiroWalletProvider: FC<ProviderProps> = ({ children }) => {
   const [userSession, setUserSession] = useState<any>(null);
   const [isWalletConnected, setIsWalletConnected] = useState(false);
   const [isWalletOpen, setIsWalletOpen] = useState(false);
+  const [network, setNetwork] = useState<"mainnet" | "testnet" | "devnet">("mainnet");
 
   useEffect(() => {
     const loadStacksConnect = async () => {
       try {
-        const { AppConfig, showConnect, UserSession } = await import('@stacks/connect');
+        const { AppConfig, showConnect, UserSession } = await import(
+          "@stacks/connect"
+        );
         const appConfig = new AppConfig(["store_write", "publish_data"]);
         const session = new UserSession({ appConfig });
- 
+
         setStacksConnect({ showConnect });
         setUserSession(session);
         setMounted(true);
         setIsWalletConnected(session.isUserSignedIn());
       } catch (error) {
-        console.error('Failed to load @stacks/connect:', error);
+        console.error("Failed to load @stacks/connect:", error);
       }
     };
 
@@ -60,7 +65,12 @@ export const HiroWalletProvider: FC<ProviderProps> = ({ children }) => {
   }, []);
 
   const authenticate = useCallback(() => {
-    if (!stacksConnect || !userSession) return;
+    if (!stacksConnect || !userSession) {
+      console.log(
+        "Authentication failed: stacksConnect or userSession not initialized"
+      );
+      return;
+    }
 
     setIsWalletOpen(true);
     stacksConnect.showConnect({
@@ -86,36 +96,41 @@ export const HiroWalletProvider: FC<ProviderProps> = ({ children }) => {
     setIsWalletConnected(false);
   }, [userSession]);
 
-  const testnetAddress = useMemo(() => 
-    isWalletConnected && userSession
-      ? userSession.loadUserData().profile.stxAddress.testnet
-      : null,
+  const testnetAddress = useMemo(
+    () =>
+      isWalletConnected && userSession
+        ? userSession.loadUserData().profile.stxAddress.testnet
+        : null,
     [isWalletConnected, userSession]
   );
 
-  const mainnetAddress = useMemo(() => 
-    isWalletConnected && userSession
-      ? userSession.loadUserData().profile.stxAddress.mainnet
-      : null,
+  const mainnetAddress = useMemo(
+    () =>
+      isWalletConnected && userSession
+        ? userSession.loadUserData().profile.stxAddress.mainnet
+        : null,
     [isWalletConnected, userSession]
   );
 
-  const hiroWalletContext = useMemo(
+  const value = useMemo(
     () => ({
-      authenticate,
-      disconnect,
       isWalletOpen,
       isWalletConnected,
       testnetAddress,
       mainnetAddress,
+      network,
+      setNetwork,
+      authenticate,
+      disconnect,
     }),
     [
-      authenticate,
-      disconnect,
       isWalletOpen,
       isWalletConnected,
-      mainnetAddress,
       testnetAddress,
+      mainnetAddress,
+      network,
+      authenticate,
+      disconnect,
     ]
   );
 
@@ -124,8 +139,10 @@ export const HiroWalletProvider: FC<ProviderProps> = ({ children }) => {
   }
 
   return (
-    <HiroWalletContext.Provider value={hiroWalletContext}>
+    <HiroWalletContext.Provider value={value}>
       {children}
     </HiroWalletContext.Provider>
   );
 };
+
+export { HiroWalletContext };

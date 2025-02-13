@@ -1,11 +1,12 @@
-'use client'
+"use client";
 
-import theme from '@/theme'
-import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
-import { DevnetWalletProvider } from '../DevnetWalletProvider'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import theme from "@/theme";
+import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
+import { DevnetWalletProvider } from "../DevnetWalletProvider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { HiroWalletProvider } from "../HiroWalletProvider";
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -13,9 +14,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <ChakraProvider theme={theme}>
         <ColorModeScript initialColorMode="light" />
         <DevnetWalletProvider>
-          {children}
+          <HiroWalletProvider>{children}</HiroWalletProvider>
         </DevnetWalletProvider>
       </ChakraProvider>
     </QueryClientProvider>
-  )
+  );
 }
