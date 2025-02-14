@@ -16,8 +16,7 @@ import {
   ConfigurationParameters,
 } from '@stacks/blockchain-api-client';
 import { isDevnetEnvironment, isTestnetEnvironment } from './use-network';
-import { Network } from '@/components/NetworkSelector';
-
+import { Network } from '@/lib/network';
 type HTTPHeaders = Record<string, string>;
 
 function createConfig(stacksApiUrl: string, headers?: HTTPHeaders): Configuration {

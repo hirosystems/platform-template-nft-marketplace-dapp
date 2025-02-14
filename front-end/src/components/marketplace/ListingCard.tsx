@@ -30,6 +30,7 @@ import { useGetTxId } from "@/hooks/useNftHoldings";
 import { formatContractName } from "@/utils/formatting";
 import { getPlaceholderImage } from "@/utils/nft-utils";
 import { useNetwork } from "@/lib/use-network";
+import { useCurrentAddress } from "@/hooks/useCurrentAddress";
 
 interface ListingCardProps {
   listing: {
@@ -49,11 +50,10 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
   const { testnetAddress } = useContext(HiroWalletContext);
   const { currentWallet } = useDevnetWallet();
   const toast = useToast();
-  const router = useRouter();
   const [purchaseTxId, setPurchaseTxId] = useState<string | null>(null);
   const network = useNetwork();
-  const api = getApi(network);
-  const { data: txData } = useGetTxId(api.transactionsApi, purchaseTxId || "");
+  const currentAddress = useCurrentAddress();
+  const { data: txData } = useGetTxId(purchaseTxId || "");
 
   useEffect(() => {
     // @ts-ignore
@@ -77,10 +77,11 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
   }, [txData, toast, onRefresh]);
 
   const handlePurchase = async () => {
+    if (!network) return;
     try {
       const txOptions = await purchaseListingStx(
         network,
-        listing.id,
+        listing.tokenId,
         listing.nftAssetContract
       );
       console.log("txOptions", txOptions);
@@ -98,7 +99,7 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
 
       await openContractCall({
         ...txOptions,
-        onFinish: (data) => {
+        onFinish: () => {
           toast({
             title: "Success",
             description: "Purchase submitted!",
@@ -125,7 +126,8 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
   };
 
   const handleCancel = async () => {
-    if (listing.maker !== testnetAddress) return;
+    if (listing.maker !== currentAddress) return;
+    if (!network) return;
 
     try {
       const txOptions = await cancelListing(

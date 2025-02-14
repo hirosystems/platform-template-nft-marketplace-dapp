@@ -8,6 +8,7 @@ import {
   Button,
   Text,
   Center,
+  Spinner,
 } from "@chakra-ui/react";
 import { ListingCard } from "@/components/marketplace/ListingCard";
 import { fetchListings, Listing } from "@/lib/marketplace/operations";
@@ -23,12 +24,13 @@ export default function BrowsePage() {
   const network = useNetwork();
   // use useNftHoldings to fetch the NFT holdings
   const { data: nftHoldings, isLoading: nftHoldingsLoading } = useNftHoldings(
-    network,
     currentWallet?.stxAddress || ""
   );
   console.log("nftHoldings", nftHoldings);
 
   const loadListings = async () => {
+    console.log("loading listings", network);
+    if (!network) return;
     setIsLoadingListings(true);
     const fetchedListings = await fetchListings(network);
     console.log("fetchedListings", fetchedListings);
@@ -39,6 +41,14 @@ export default function BrowsePage() {
   useEffect(() => {
     loadListings();
   }, [network]);
+
+  if (!network) {
+    return <Center minH="50vh">
+      <VStack spacing={4}>
+        <Spinner />
+      </VStack>
+    </Center>
+  }
 
   return (
     <Container maxW="container.xl" py={8}>

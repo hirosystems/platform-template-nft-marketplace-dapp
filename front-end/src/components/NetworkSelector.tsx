@@ -15,8 +15,8 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
+import { Network } from "@/lib/network";
 
-export type Network = "mainnet" | "testnet" | "devnet";
 
 export const NetworkSelector: FC = () => {
   const { network, setNetwork } = useContext(HiroWalletContext);
@@ -43,6 +43,8 @@ export const NetworkSelector: FC = () => {
       status: "offline",
     },
   ];
+
+  if (!network) return null;
 
   return (
     <Menu>

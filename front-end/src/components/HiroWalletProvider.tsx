@@ -8,14 +8,15 @@ import {
   useMemo,
   useState,
 } from "react";
-
+import { getPersistedNetwork, persistNetwork } from "@/lib/network";
+import { Network } from "@/lib/network";
 interface HiroWallet {
   isWalletOpen: boolean;
   isWalletConnected: boolean;
   testnetAddress: string | null;
   mainnetAddress: string | null;
-  network: "mainnet" | "testnet" | "devnet";
-  setNetwork: (network: "mainnet" | "testnet" | "devnet") => void;
+  network: Network | null;
+  setNetwork: (network: Network) => void;
   authenticate: () => void;
   disconnect: () => void;
 }
@@ -41,7 +42,15 @@ export const HiroWalletProvider: FC<ProviderProps> = ({ children }) => {
   const [userSession, setUserSession] = useState<any>(null);
   const [isWalletConnected, setIsWalletConnected] = useState(false);
   const [isWalletOpen, setIsWalletOpen] = useState(false);
-  const [network, setNetwork] = useState<"mainnet" | "testnet" | "devnet">("mainnet");
+  const [network, setNetwork] = useState<Network | null>(null);
+
+  const updateNetwork = useCallback(
+    (newNetwork: Network) => {
+      setNetwork(newNetwork);
+      persistNetwork(newNetwork);
+    },
+    []
+  );
 
   useEffect(() => {
     const loadStacksConnect = async () => {
@@ -62,6 +71,12 @@ export const HiroWalletProvider: FC<ProviderProps> = ({ children }) => {
     };
 
     loadStacksConnect();
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setNetwork(getPersistedNetwork());
+    }
   }, []);
 
   const authenticate = useCallback(() => {
@@ -119,7 +134,7 @@ export const HiroWalletProvider: FC<ProviderProps> = ({ children }) => {
       testnetAddress,
       mainnetAddress,
       network,
-      setNetwork,
+      setNetwork: updateNetwork,
       authenticate,
       disconnect,
     }),
@@ -131,6 +146,7 @@ export const HiroWalletProvider: FC<ProviderProps> = ({ children }) => {
       network,
       authenticate,
       disconnect,
+      updateNetwork,
     ]
   );
 

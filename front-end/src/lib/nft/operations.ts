@@ -1,8 +1,8 @@
 import { PostConditionMode, principalCV } from "@stacks/transactions";
-import { Network } from "@/components/NetworkSelector";
 import { getNftContract } from "@/constants/contracts";
-
-export const mintFunnyDogNFT = async (network: Network, recipientAddress: string): Promise<string> => {
+import { Network } from "@/lib/network";
+export const mintFunnyDogNFT = async (network: Network | null, recipientAddress: string): Promise<string> => {
+  if (!network) throw new Error('Network is required');
   const { openContractCall } = await import("@stacks/connect");
   const recipient = principalCV(recipientAddress);
   const functionArgs = [recipient];

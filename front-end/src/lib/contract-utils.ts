@@ -12,9 +12,8 @@ import {
 } from '@stacks/transactions';
 import { generateWallet } from '@stacks/wallet-sdk';
 import { DevnetWallet } from './devnet-wallet-context';
-import { Network } from '@/components/NetworkSelector';
 import { isDevnetEnvironment } from './use-network';
-
+import { Network } from '@/lib/network';
 export type ContractCallRegularOptions = ContractCallRegularOptionsType;
 
 interface DirectCallResponse {

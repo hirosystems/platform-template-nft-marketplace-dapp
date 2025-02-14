@@ -1,6 +1,5 @@
-import { Network } from "@/components/NetworkSelector";
 import { isDevnetEnvironment, isTestnetEnvironment } from "@/lib/use-network";
-
+import { Network } from "@/lib/network";
 export const getNftContractAddress = (network: Network) => {
   if (isDevnetEnvironment(network)) {
     return process.env.NEXT_PUBLIC_DEPLOYER_ACCOUNT_ADDRESS || 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';

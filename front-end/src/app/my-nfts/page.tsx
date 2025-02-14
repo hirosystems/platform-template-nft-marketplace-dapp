@@ -28,12 +28,10 @@ export default function MyNFTsPage() {
   console.log("currentAddress", currentAddress);
   const network = useNetwork();
   const { data: nftHoldings, isLoading: nftHoldingsLoading } = useNftHoldings(
-    network,
     currentAddress || ""
   );
 
   const toast = useToast();
-  const isTestnet = isTestnetEnvironment(network);
   const handleMintNFT = async () => {
     if (!currentAddress) return;
 

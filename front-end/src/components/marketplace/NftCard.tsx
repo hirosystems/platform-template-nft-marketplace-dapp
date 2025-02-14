@@ -53,6 +53,7 @@ export const NftCard = ({ nft }: NftCardProps) => {
   }
 
   const handleList = async () => {
+    if (!network) return;
     if (!price) {
       toast({
         title: "Error",

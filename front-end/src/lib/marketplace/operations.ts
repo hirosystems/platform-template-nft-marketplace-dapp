@@ -23,8 +23,7 @@ import {
 } from '@stacks/transactions';
 import { getMarketplaceContract } from '@/constants/contracts';
 import { getApi } from '@/lib/stacks-api';
-import { Network } from '@/components/NetworkSelector';
-
+import { Network } from '@/lib/network';
 const baseContractCall = {
   anchorMode: AnchorMode.Any,
   postConditionMode: PostConditionMode.Deny,
