@@ -20,6 +20,7 @@ import {
   NonFungiblePostCondition,
   Cl,
   cvToJSON,
+  StxPostCondition,
 } from '@stacks/transactions';
 import { getMarketplaceContract } from '@/constants/contracts';
 import { getApi } from '@/lib/stacks-api';
@@ -48,14 +49,6 @@ export const listAsset = (network: Network, params: ListAssetParams): ContractCa
     'payment-asset-contract': noneCV(),
   };
 
-  const nftPostCondition: NonFungiblePostCondition = {
-    type: 'nft-postcondition',
-    address: marketplaceContract.contractAddress,
-    condition: 'sent',
-    asset: `${params.nftContractAddress}.${params.nftContractName}::funny-dog`,
-    assetId: Cl.uint(params.tokenId),
-  };
-
   return {
     ...baseContractCall,
     ...marketplaceContract,
@@ -65,7 +58,7 @@ export const listAsset = (network: Network, params: ListAssetParams): ContractCa
       contractPrincipalCV(params.nftContractAddress, params.nftContractName),
       tupleCV(nftAsset)
     ],
-    postConditions: [nftPostCondition],
+    postConditionMode: PostConditionMode.Allow,
   };
 };
 
@@ -75,13 +68,15 @@ export const cancelListing = async (
   nftContract: string
 ): Promise<ContractCallRegularOptions> => {
   const marketplaceContract = getMarketplaceContract(network);
+  const [contractAddress, contractName] = nftContract.split('.');
   return {
     ...baseContractCall,
     ...marketplaceContract,
     functionName: 'cancel-listing',
+    postConditionMode: PostConditionMode.Allow,
     functionArgs: [
       uintCV(listingId),
-      contractPrincipalCV(nftContract, 'nft-trait')
+      contractPrincipalCV(contractAddress, contractName)
     ],
   };
 };
@@ -92,18 +87,23 @@ export const contractToPrincipalCV = (contract: string) => {
 
 export const purchaseListingStx = async (
   network: Network,
-  listingId: number,
-  nftContract: string
+  currentAddress: string,
+  listing: Listing
 ): Promise<ContractCallRegularOptions> => {
   const marketplaceContract = getMarketplaceContract(network);
+  const { id, tokenId, price, nftAssetContract } = listing;
+  // Split to follow the type asset: AssetString
+  const [contractAddress, contractName] = nftAssetContract.split('.');
+
   return {
     ...baseContractCall,
     ...marketplaceContract,
     functionName: 'fulfil-listing-stx',
     functionArgs: [
-      uintCV(listingId),
-      contractToPrincipalCV(nftContract)
+      uintCV(id),
+      contractToPrincipalCV(nftAssetContract)
     ],
+    postConditionMode: PostConditionMode.Allow,
   };
 };
 
@@ -131,7 +131,7 @@ export const parseReadOnlyResponse = ({ result }: ReadOnlyResponse) => {
   return clarityValue;
 };
 
-const parseListing = (cv: ClarityValue): Listing | undefined => {
+const parseListing = (listingId: number, cv: ClarityValue): Listing | undefined => {
   // If cv is of type "some", unwrap it to get the underlying tuple
   if (cv.type === "some") {
     cv = cv.value;
@@ -148,7 +148,7 @@ const parseListing = (cv: ClarityValue): Listing | undefined => {
     'payment-asset-contract': ClarityValue;
   }>;
 
-  const id = tuple.value.id ? Number(cvToString(tuple.value.id)) : Number(cvToString(tuple.value['token-id']));
+  // const id = tuple.value.id ? Number(cvToString(tuple.value.id)) : Number(cvToString(tuple.value['token-id']));
   const maker = cvToString(tuple.value.maker);
   const taker = cvToString(tuple.value.taker) === 'none' ? null : cvToString(tuple.value.taker);
   const tokenId = Number(cvToValue(tuple.value['token-id']));
@@ -158,7 +158,7 @@ const parseListing = (cv: ClarityValue): Listing | undefined => {
   const paymentAssetContract = cvToString(tuple.value['payment-asset-contract']) === 'none' ? null : cvToString(tuple.value['payment-asset-contract']);
 
   return {
-    id,
+    id: listingId,
     maker,
     taker,
     tokenId,
@@ -187,7 +187,8 @@ const fetchListing = async (network: Network, listingId: number): Promise<Listin
     if (!clarityValue) return undefined;
     console.log(cvToString(clarityValue));
     console.log(cvToJSON(clarityValue));
-    const listing = parseListing(clarityValue);
+    const listing = parseListing(listingId, clarityValue);
+    if (!listing) return undefined;
     console.log(listing);
     return listing;
   } catch (error) {
@@ -196,13 +197,8 @@ const fetchListing = async (network: Network, listingId: number): Promise<Listin
   }
 };
 
-export async function fetchListings(network: Network, maxId: number = 2): Promise<Listing[]> {
-  const listings: Listing[] = [];
-
-  for (let i = 0; i < maxId; i++) {
-    const listing = await fetchListing(network, i);
-    if (listing) listings.push(listing);
-  }
-
-  return listings;
+export async function fetchListings(network: Network, maxId: number = 10): Promise<Listing[]> {
+  const listingPromises = Array.from({ length: maxId }, (_, i) => fetchListing(network, i));
+  const listings = await Promise.all(listingPromises);
+  return listings.filter((listing): listing is Listing => listing !== undefined);
 }

@@ -17,7 +17,7 @@ import { NftCard } from "@/components/marketplace/NftCard";
 import { useNftHoldings } from "@/hooks/useNftHoldings";
 import { formatValue } from "@/lib/clarity-utils";
 import { mintFunnyDogNFT } from "@/lib/nft/operations";
-import { isTestnetEnvironment, useNetwork } from "@/lib/use-network";
+import { useNetwork } from "@/lib/use-network";
 import { useCurrentAddress } from "@/hooks/useCurrentAddress";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { useState } from "react";

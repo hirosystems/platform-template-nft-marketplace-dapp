@@ -77,12 +77,13 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
   }, [txData, toast, onRefresh]);
 
   const handlePurchase = async () => {
-    if (!network) return;
+    if (!network || !currentAddress) return;
+    console.log("listing", listing);
     try {
       const txOptions = await purchaseListingStx(
         network,
-        listing.tokenId,
-        listing.nftAssetContract
+        currentAddress,
+        listing
       );
       console.log("txOptions", txOptions);
 
@@ -126,6 +127,7 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
   };
 
   const handleCancel = async () => {
+    console.log("cancel listing", listing);
     if (listing.maker !== currentAddress) return;
     if (!network) return;
 
@@ -155,6 +157,7 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
         },
       });
     } catch (e) {
+      console.error(e);
       toast({
         title: "Error",
         description: "Failed to cancel listing",
@@ -189,7 +192,7 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
           </Text>
           <Flex justify="space-between" align="center">
             <Text color="orange.500" fontWeight="bold">
-              {listing.price} STX
+              {listing.price / 1000000} STX
             </Text>
             <Text fontSize="xs" color="gray.400">
               By {listing.maker.slice(0, 6)}...
