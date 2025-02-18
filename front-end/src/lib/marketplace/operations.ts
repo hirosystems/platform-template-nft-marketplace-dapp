@@ -48,6 +48,7 @@ export const listAsset = (network: Network, params: ListAssetParams): ContractCa
     'taker': params.intendedTaker ? someCV(principalCV(params.intendedTaker)) : noneCV(),
     'payment-asset-contract': noneCV(),
   };
+  console.log('nftAsset', nftAsset);
 
   return {
     ...baseContractCall,

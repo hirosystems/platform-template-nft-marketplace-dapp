@@ -70,10 +70,9 @@ export const NftCard = ({ nft }: NftCardProps) => {
         nftContractAddress: contractAddress,
         nftContractName: contractName,
         tokenId: tokenId,
-        price: Number(parseInt(price) * 1000000),
+        price: Number(+price * 1000000),
         expiry: 1000000000,
       });
-      console.log("txOptions", txOptions);
 
       if (shouldUseDirectCall(network)) {
 
@@ -136,13 +135,6 @@ export const NftCard = ({ nft }: NftCardProps) => {
               src={getPlaceholderImage(tokenId)}
               alt={`NFT #${tokenId}`}
               borderRadius="lg"
-              style={{
-                filter: "grayscale(100%) contrast(120%)",
-                transition: "filter 0.3s ease",
-              }}
-              _hover={{
-                filter: "grayscale(0%) contrast(100%)",
-              }}
               width="100%"
               height="100%"
               objectFit="cover"

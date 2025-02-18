@@ -95,7 +95,7 @@
 )
   (let ((listing-id (var-get listing-nonce)))
     ;; Verify that the contract of this asset is whitelisted
-    ;; (asserts! (is-whitelisted (contract-of nft-asset-contract)) ERR_ASSET_CONTRACT_NOT_WHITELISTED)
+    (asserts! (is-whitelisted (contract-of nft-asset-contract)) ERR_ASSET_CONTRACT_NOT_WHITELISTED)
     ;; Verify that the asset is not expired
     ;; (asserts! (> (get expiry nft-asset) burn-block-height) ERR_EXPIRY_IN_PAST)
     ;; Verify that the asset price is greater than zero
