@@ -200,7 +200,19 @@ const fetchListing = async (network: Network, listingId: number): Promise<Listin
 };
 
 export async function fetchListings(network: Network, maxId: number = 10): Promise<Listing[]> {
-  const listingPromises = Array.from({ length: maxId }, (_, i) => fetchListing(network, i));
-  const listings = await Promise.all(listingPromises);
-  return listings.filter((listing): listing is Listing => listing !== undefined);
+  const allListings: Listing[] = [];
+  const batchSize = 4;
+
+  // Process in batches to avoid rate limiting
+  for (let i = 0; i < maxId; i += batchSize) {
+    const batchPromises = Array.from(
+      { length: Math.min(batchSize, maxId - i) },
+      (_, index) => fetchListing(network, i + index)
+    );
+    const batchResults = await Promise.all(batchPromises);
+    console.log('batchResults', batchResults);
+    allListings.push(...batchResults.filter((listing): listing is Listing => listing !== undefined));
+  }
+
+  return allListings;
 }

@@ -28,7 +28,6 @@ export default function BrowsePage() {
   console.log("nftHoldings", nftHoldings);
 
   const loadListings = async () => {
-    console.log("loading listings", network);
     if (!network) return;
     setIsLoadingListings(true);
     const fetchedListings = await fetchListings(network);
@@ -39,6 +38,12 @@ export default function BrowsePage() {
 
   useEffect(() => {
     loadListings();
+
+    const intervalId = setInterval(() => {
+      loadListings();
+    }, 30000);
+
+    return () => clearInterval(intervalId);
   }, [network]);
 
   if (!network) {
