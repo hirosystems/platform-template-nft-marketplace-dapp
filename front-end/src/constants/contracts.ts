@@ -9,7 +9,8 @@ export const getNftContractAddress = (network: Network) => {
     return 'ST2CEP848SACBBX7KHVC4TBZXBV0JH6SC0WF439NF'
   }
   // Mainnet address
-  return 'SP1VKS5TGA6J8AVNG6DP0V2TKX55VYYXJP6DYPSTN';
+  return 'SP30VANCWST2Y0RY3EYGJ4ZK6D22GJQRR7H5YD8J8';
+
 };
 
 export const getNftContract = (network: Network) => {
@@ -27,7 +28,7 @@ export const getMarketplaceContractAddress = (network: Network) => {
     return 'ST2CEP848SACBBX7KHVC4TBZXBV0JH6SC0WF439NF';
   }
   // Mainnet address
-  return 'SP1VKS5TGA6J8AVNG6DP0V2TKX55VYYXJP6DYPSTN';
+  return 'SP30VANCWST2Y0RY3EYGJ4ZK6D22GJQRR7H5YD8J8';
 };
 
 export const getMarketplaceContract = (network: Network) => {
