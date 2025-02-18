@@ -100,7 +100,7 @@ export default function MyNFTsPage() {
             fontSize="sm"
             textAlign="center"
           >
-            View transaction in explorer <ExternalLinkIcon mx="2px" />
+            View your latest transaction <ExternalLinkIcon mx="2px" />
           </Link>
         )}
       </VStack>

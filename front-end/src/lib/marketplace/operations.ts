@@ -99,6 +99,7 @@ export const purchaseListingStx = async (
   return {
     ...baseContractCall,
     ...marketplaceContract,
+    network,
     functionName: 'fulfil-listing-stx',
     functionArgs: [
       uintCV(id),

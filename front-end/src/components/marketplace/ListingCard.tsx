@@ -209,10 +209,7 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
           ) : (
             <Button
               colorScheme="orange"
-              onClick={handlePurchase}
-              isDisabled={
-                listing.taker !== null && listing.taker !== testnetAddress
-              }
+                onClick={handlePurchase}
               isLoading={!!purchaseTxId && !txData}
               loadingText="Purchasing..."
             >
