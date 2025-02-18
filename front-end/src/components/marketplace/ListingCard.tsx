@@ -47,7 +47,7 @@ interface ListingCardProps {
 }
 
 export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
-  const { testnetAddress } = useContext(HiroWalletContext);
+  const { testnetAddress, mainnetAddress } = useContext(HiroWalletContext);
   const { currentWallet } = useDevnetWallet();
   const toast = useToast();
   const [purchaseTxId, setPurchaseTxId] = useState<string | null>(null);
@@ -202,7 +202,7 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
       </CardBody>
       <CardFooter pt={0} px={4} pb={4}>
         <Stack spacing={2} width="100%">
-          {listing.maker === testnetAddress ? (
+          {listing.maker === testnetAddress || listing.maker === mainnetAddress ? (
             <Button colorScheme="orange" onClick={handleCancel}>
               Cancel Listing
             </Button>

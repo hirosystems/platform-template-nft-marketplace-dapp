@@ -22,7 +22,6 @@ export default function BrowsePage() {
 
   const { currentWallet } = useDevnetWallet();
   const network = useNetwork();
-  // use useNftHoldings to fetch the NFT holdings
   const { data: nftHoldings, isLoading: nftHoldingsLoading } = useNftHoldings(
     currentWallet?.stxAddress || ""
   );
