@@ -1,3 +1,3 @@
 export const getPlaceholderImage = (tokenId: number) => {
-  return `/images/dogs/dog-${tokenId % 12}.webp`;
+  return `/images/dogs/${tokenId % 12}.webp`;
 };
