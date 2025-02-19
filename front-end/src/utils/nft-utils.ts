@@ -1,4 +1,3 @@
-
 export const getPlaceholderImage = (tokenId: number) => {
-  return `https://placedog.net/200/200?id=${tokenId % 16}`;
+  return `/images/dogs/dog-${tokenId % 12}.webp`;
 };
