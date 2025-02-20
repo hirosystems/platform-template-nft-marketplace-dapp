@@ -1,6 +1,6 @@
-"use client";
-import { FC, useContext } from "react";
-import { HiroWalletContext } from "./HiroWalletProvider";
+'use client';
+import { FC, useContext } from 'react';
+import { HiroWalletContext } from './HiroWalletProvider';
 import {
   Menu,
   MenuButton,
@@ -13,34 +13,33 @@ import {
   Badge,
   Icon,
   useColorModeValue,
-} from "@chakra-ui/react";
-import { ChevronDownIcon } from "@chakra-ui/icons";
-import { Network } from "@/lib/network";
-
+} from '@chakra-ui/react';
+import { ChevronDownIcon } from '@chakra-ui/icons';
+import { Network } from '@/lib/network';
 
 export const NetworkSelector: FC = () => {
   const { network, setNetwork } = useContext(HiroWalletContext);
-  const menuBg = useColorModeValue("white", "gray.800");
-  const menuHoverBg = useColorModeValue("gray.50", "gray.700");
+  const menuBg = useColorModeValue('white', 'gray.800');
+  const menuHoverBg = useColorModeValue('gray.50', 'gray.700');
 
   const networks = [
     {
-      name: "Stacks Mainnet",
-      value: "mainnet" as Network,
-      endpoint: "api.hiro.so",
-      status: "online",
+      name: 'Stacks Mainnet',
+      value: 'mainnet' as Network,
+      endpoint: 'api.hiro.so',
+      status: 'online',
     },
     {
-      name: "Stacks Testnet",
-      value: "testnet" as Network,
-      endpoint: "api.testnet.hiro.so",
-      status: "online",
+      name: 'Stacks Testnet',
+      value: 'testnet' as Network,
+      endpoint: 'api.testnet.hiro.so',
+      status: 'online',
     },
     {
-      name: "Devnet",
-      value: "devnet" as Network,
-      endpoint: "localhost:3999",
-      status: "offline",
+      name: 'Devnet',
+      value: 'devnet' as Network,
+      endpoint: 'localhost:3999',
+      status: 'offline',
     },
   ];
 
@@ -71,7 +70,7 @@ export const NetworkSelector: FC = () => {
                 <Text fontSize="sm" color="gray.500">
                   {net.endpoint}
                 </Text>
-                {net.status === "offline" && (
+                {net.status === 'offline' && (
                   <Badge colorScheme="red" ml={2}>
                     Offline
                   </Badge>

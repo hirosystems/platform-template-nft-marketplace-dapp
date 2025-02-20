@@ -1,7 +1,7 @@
-"use client";
-import { useState, useEffect, useContext } from "react";
-import { HiroWalletContext } from "@/components/HiroWalletProvider";
-import { Network } from "@/lib/network";
+'use client';
+import { useState, useEffect, useContext } from 'react';
+import { HiroWalletContext } from '@/components/HiroWalletProvider';
+import { Network } from '@/lib/network';
 export const useNetwork = () => {
   const [network, setNetwork] = useState<Network | null>(null);
   const { network: contextNetwork } = useContext(HiroWalletContext);
@@ -14,13 +14,13 @@ export const useNetwork = () => {
 };
 
 export const isDevnetEnvironment = (network: Network | null) => {
-  return network === "devnet";
+  return network === 'devnet';
 };
 
 export const isTestnetEnvironment = (network: Network | null) => {
-  return network === "testnet";
+  return network === 'testnet';
 };
 
 export const isMainnetEnvironment = (network: Network | null) => {
-  return network === "mainnet";
+  return network === 'mainnet';
 };

@@ -1,20 +1,12 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import {
-  Container,
-  SimpleGrid,
-  VStack,
-  Button,
-  Text,
-  Center,
-  Spinner,
-} from "@chakra-ui/react";
-import { ListingCard } from "@/components/marketplace/ListingCard";
-import { fetchListings, Listing } from "@/lib/marketplace/operations";
-import { useNftHoldings } from "@/hooks/useNftHoldings";
-import { useDevnetWallet } from "@/lib/devnet-wallet-context";
-import { useNetwork } from "@/lib/use-network";
+import { useState, useEffect } from 'react';
+import { Container, SimpleGrid, VStack, Button, Text, Center, Spinner } from '@chakra-ui/react';
+import { ListingCard } from '@/components/marketplace/ListingCard';
+import { fetchListings, Listing } from '@/lib/marketplace/operations';
+import { useNftHoldings } from '@/hooks/useNftHoldings';
+import { useDevnetWallet } from '@/lib/devnet-wallet-context';
+import { useNetwork } from '@/lib/use-network';
 
 export default function BrowsePage() {
   const [listings, setListings] = useState<Listing[]>([]);
@@ -23,14 +15,14 @@ export default function BrowsePage() {
   const { currentWallet } = useDevnetWallet();
   const network = useNetwork();
   const { data: nftHoldings, isLoading: nftHoldingsLoading } = useNftHoldings(
-    currentWallet?.stxAddress || ""
+    currentWallet?.stxAddress || ''
   );
-  console.log("nftHoldings", nftHoldings);
+  console.log('nftHoldings', nftHoldings);
 
   const loadListings = async () => {
     if (!network) return;
     const fetchedListings = await fetchListings(network);
-    console.log("foo: fetchedListings", fetchedListings);
+    console.log('foo: fetchedListings', fetchedListings);
     setListings(fetchedListings);
     setIsLoadingListings(false);
   };
@@ -49,11 +41,13 @@ export default function BrowsePage() {
   }, [network]);
 
   if (!network) {
-    return <Center minH="50vh">
-      <VStack spacing={4}>
-        <Spinner />
-      </VStack>
-    </Center>
+    return (
+      <Center minH="50vh">
+        <VStack spacing={4}>
+          <Spinner />
+        </VStack>
+      </Center>
+    );
   }
 
   return (
@@ -71,24 +65,14 @@ export default function BrowsePage() {
         ) : listings.length > 0 ? (
           <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
             {listings.map((listing) => (
-              <ListingCard
-                key={listing.id}
-                listing={listing}
-                onRefresh={loadListings}
-              />
+              <ListingCard key={listing.id} listing={listing} onRefresh={loadListings} />
             ))}
           </SimpleGrid>
         ) : (
           <Center minH="50vh">
             <VStack spacing={4}>
               <Text fontSize="xl">No NFTs listed yet</Text>
-              <Button
-                as="a"
-                href="/my-nfts"
-                colorScheme="blue"
-                size="lg"
-                px={8}
-              >
+              <Button as="a" href="/my-nfts" colorScheme="blue" size="lg" px={8}>
                 List Your First NFT
               </Button>
             </VStack>

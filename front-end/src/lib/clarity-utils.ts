@@ -1,4 +1,4 @@
-import { deserialize, prettyPrint } from "@stacks/transactions/dist/cl";
+import { deserialize, prettyPrint } from '@stacks/transactions/dist/cl';
 
 export function formatValue(hex: string) {
   const value = deserialize(hex);

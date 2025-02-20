@@ -1,10 +1,22 @@
-"use client";
+'use client';
 
-import { Box, Button, Flex, Tooltip, Tag, Menu, MenuButton, MenuList, MenuItem, IconButton, Link } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Tooltip,
+  Tag,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  IconButton,
+  Link,
+} from '@chakra-ui/react';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import { DevnetWallet } from '@/lib/devnet-wallet-context';
-import { formatStxAddress } from "@/lib/address-utils";
-import { DEVNET_STACKS_BLOCKCHAIN_API_URL } from "@/constants/devnet";
+import { formatStxAddress } from '@/lib/address-utils';
+import { DEVNET_STACKS_BLOCKCHAIN_API_URL } from '@/constants/devnet';
 
 interface DevnetWalletButtonProps {
   currentWallet: DevnetWallet | null;
@@ -12,23 +24,21 @@ interface DevnetWalletButtonProps {
   onWalletSelect: (wallet: DevnetWallet) => void;
 }
 
-export const DevnetWalletButton = ({ currentWallet, wallets, onWalletSelect }: DevnetWalletButtonProps) => {
+export const DevnetWalletButton = ({
+  currentWallet,
+  wallets,
+  onWalletSelect,
+}: DevnetWalletButtonProps) => {
   return (
     <Menu>
       <Flex align="center">
         <Link
           href={`https://explorer.hiro.so/address/${currentWallet?.stxAddress}?chain=testnet&api=${DEVNET_STACKS_BLOCKCHAIN_API_URL}`}
           target="_blank"
-          _hover={{ textDecoration: "none" }}
+          _hover={{ textDecoration: 'none' }}
         >
-          <Button
-            variant="ghost"
-            rightIcon={<ChevronDownIcon visibility="hidden" />}
-          >
-            <Tooltip
-              label="Devnet connection detected, click to view in explorer"
-              bg="gray.800"
-            >
+          <Button variant="ghost" rightIcon={<ChevronDownIcon visibility="hidden" />}>
+            <Tooltip label="Devnet connection detected, click to view in explorer" bg="gray.800">
               <Flex align="center" gap={2}>
                 <Box
                   fontSize="sm"
@@ -37,7 +47,7 @@ export const DevnetWalletButton = ({ currentWallet, wallets, onWalletSelect }: D
                   overflow="hidden"
                   textOverflow="ellipsis"
                 >
-                  {formatStxAddress(currentWallet?.stxAddress || "")}
+                  {formatStxAddress(currentWallet?.stxAddress || '')}
                 </Box>
                 <Tag size="sm" colorScheme="purple" borderRadius="full">
                   devnet
@@ -54,12 +64,9 @@ export const DevnetWalletButton = ({ currentWallet, wallets, onWalletSelect }: D
           size="md"
         />
       </Flex>
-      <MenuList width={"100%"}>
+      <MenuList width={'100%'}>
         {wallets.map((wallet) => (
-          <MenuItem
-            key={wallet.stxAddress}
-            onClick={() => onWalletSelect(wallet)}
-          >
+          <MenuItem key={wallet.stxAddress} onClick={() => onWalletSelect(wallet)}>
             <Flex align="center" gap={2}>
               <Box
                 fontSize="sm"

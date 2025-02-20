@@ -8,7 +8,7 @@ import {
   ClarityValue,
   PostCondition,
   PostConditionMode,
-  AnchorMode
+  AnchorMode,
 } from '@stacks/transactions';
 import { generateWallet } from '@stacks/wallet-sdk';
 import { DevnetWallet } from './devnet-wallet-context';
@@ -20,7 +20,7 @@ interface DirectCallResponse {
   txid: string;
 }
 
-export const shouldUseDirectCall = isDevnetEnvironment
+export const shouldUseDirectCall = isDevnetEnvironment;
 
 export const executeContractCall = async (
   txOptions: ContractCallRegularOptions,
@@ -48,7 +48,7 @@ export const executeContractCall = async (
 
   const response = await broadcastTransaction({
     transaction,
-    network: contractCallTxOptions.network
+    network: contractCallTxOptions.network,
   });
 
   if ('error' in response) {

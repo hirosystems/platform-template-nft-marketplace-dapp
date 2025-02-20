@@ -1,15 +1,7 @@
-"use client";
-import {
-  createContext,
-  FC,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { getPersistedNetwork, persistNetwork } from "@/lib/network";
-import { Network } from "@/lib/network";
+'use client';
+import { createContext, FC, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { getPersistedNetwork, persistNetwork } from '@/lib/network';
+import { Network } from '@/lib/network';
 interface HiroWallet {
   isWalletOpen: boolean;
   isWalletConnected: boolean;
@@ -26,7 +18,7 @@ const HiroWalletContext = createContext<HiroWallet>({
   isWalletConnected: false,
   testnetAddress: null,
   mainnetAddress: null,
-  network: "mainnet",
+  network: 'mainnet',
   setNetwork: () => {},
   authenticate: () => {},
   disconnect: () => {},
@@ -44,21 +36,16 @@ export const HiroWalletProvider: FC<ProviderProps> = ({ children }) => {
   const [isWalletOpen, setIsWalletOpen] = useState(false);
   const [network, setNetwork] = useState<Network | null>(null);
 
-  const updateNetwork = useCallback(
-    (newNetwork: Network) => {
-      setNetwork(newNetwork);
-      persistNetwork(newNetwork);
-    },
-    []
-  );
+  const updateNetwork = useCallback((newNetwork: Network) => {
+    setNetwork(newNetwork);
+    persistNetwork(newNetwork);
+  }, []);
 
   useEffect(() => {
     const loadStacksConnect = async () => {
       try {
-        const { AppConfig, showConnect, UserSession } = await import(
-          "@stacks/connect"
-        );
-        const appConfig = new AppConfig(["store_write", "publish_data"]);
+        const { AppConfig, showConnect, UserSession } = await import('@stacks/connect');
+        const appConfig = new AppConfig(['store_write', 'publish_data']);
         const session = new UserSession({ appConfig });
 
         setStacksConnect({ showConnect });
@@ -66,7 +53,7 @@ export const HiroWalletProvider: FC<ProviderProps> = ({ children }) => {
         setMounted(true);
         setIsWalletConnected(session.isUserSignedIn());
       } catch (error) {
-        console.error("Failed to load @stacks/connect:", error);
+        console.error('Failed to load @stacks/connect:', error);
       }
     };
 
@@ -74,26 +61,24 @@ export const HiroWalletProvider: FC<ProviderProps> = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== 'undefined') {
       setNetwork(getPersistedNetwork());
     }
   }, []);
 
   const authenticate = useCallback(() => {
     if (!stacksConnect || !userSession) {
-      console.log(
-        "Authentication failed: stacksConnect or userSession not initialized"
-      );
+      console.log('Authentication failed: stacksConnect or userSession not initialized');
       return;
     }
 
     setIsWalletOpen(true);
     stacksConnect.showConnect({
       appDetails: {
-        name: "Hiro",
+        name: 'Hiro',
         icon: `${window.location.origin}/logo512.png`,
       },
-      redirectTo: "/",
+      redirectTo: '/',
       onFinish: async () => {
         setIsWalletOpen(false);
         setIsWalletConnected(userSession.isUserSignedIn());
@@ -154,11 +139,7 @@ export const HiroWalletProvider: FC<ProviderProps> = ({ children }) => {
     return null;
   }
 
-  return (
-    <HiroWalletContext.Provider value={value}>
-      {children}
-    </HiroWalletContext.Provider>
-  );
+  return <HiroWalletContext.Provider value={value}>{children}</HiroWalletContext.Provider>;
 };
 
 export { HiroWalletContext };

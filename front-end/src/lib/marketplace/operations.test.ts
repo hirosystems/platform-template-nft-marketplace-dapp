@@ -1,9 +1,4 @@
-import {
-  listAsset,
-  cancelListing,
-  purchaseListingStx,
-  ListAssetParams
-} from './operations';
+import { listAsset, cancelListing, purchaseListingStx, ListAssetParams } from './operations';
 import {
   AnchorMode,
   PostConditionMode,
@@ -11,12 +6,15 @@ import {
   principalCV,
   someCV,
   noneCV,
-  contractPrincipalCV
+  contractPrincipalCV,
 } from '@stacks/transactions';
-import { getMarketplaceContractAddress, getNftContractAddress, MARKETPLACE_CONTRACT } from '@/constants/contracts';
+import {
+  getMarketplaceContractAddress,
+  getNftContractAddress,
+  MARKETPLACE_CONTRACT,
+} from '@/constants/contracts';
 
 describe('Marketplace Operations', () => {
-
   describe('listAsset', () => {
     it('should create correct contract call options for listing without taker', async () => {
       const params: ListAssetParams = {
@@ -43,7 +41,7 @@ describe('Marketplace Operations', () => {
             expiry: uintCV(1000),
             taker: noneCV(),
             paymentAssetContract: noneCV(),
-          }
+          },
         ],
         postConditionMode: PostConditionMode.Deny,
       });
@@ -60,9 +58,7 @@ describe('Marketplace Operations', () => {
       };
 
       const result = await listAsset(params);
-      expect(result.functionArgs[1].taker).toEqual(
-        someCV(principalCV(params.intendedTaker!))
-      );
+      expect(result.functionArgs[1].taker).toEqual(someCV(principalCV(params.intendedTaker!)));
     });
   });
 
@@ -76,10 +72,7 @@ describe('Marketplace Operations', () => {
         contractAddress: MARKETPLACE_CONTRACT.address,
         contractName: MARKETPLACE_CONTRACT.name,
         functionName: 'cancel-listing',
-        functionArgs: [
-          uintCV(1),
-          contractPrincipalCV(mockNftContract, 'nft-trait')
-        ],
+        functionArgs: [uintCV(1), contractPrincipalCV(mockNftContract, 'nft-trait')],
         postConditionMode: PostConditionMode.Deny,
       });
     });
@@ -95,12 +88,9 @@ describe('Marketplace Operations', () => {
         contractAddress: MARKETPLACE_CONTRACT.address,
         contractName: MARKETPLACE_CONTRACT.name,
         functionName: 'fulfil-listing-stx',
-        functionArgs: [
-          uintCV(1),
-          contractPrincipalCV(mockNftContract, 'nft-trait')
-        ],
+        functionArgs: [uintCV(1), contractPrincipalCV(mockNftContract, 'nft-trait')],
         postConditionMode: PostConditionMode.Deny,
       });
     });
   });
-}); 
+});

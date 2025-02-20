@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   CardFooter,
@@ -14,21 +14,17 @@ import {
   HStack,
   VStack,
   useToast,
-} from "@chakra-ui/react";
-import { formatContractName } from "@/utils/formatting";
-import { getPlaceholderImage } from "@/utils/nft-utils";
-import { useState } from "react";
-import { listAsset } from "@/lib/marketplace/operations";
-import {
-  shouldUseDirectCall,
-  executeContractCall,
-  openContractCall,
-} from "@/lib/contract-utils";
-import { storeTxid } from "@/utils/localStorageUtils";
-import { useDevnetWallet } from "@/lib/devnet-wallet-context";
-import { useRouter } from "next/navigation";
-import { useNetwork } from "@/lib/use-network";
-import { useCurrentAddress } from "@/hooks/useCurrentAddress";
+} from '@chakra-ui/react';
+import { formatContractName } from '@/utils/formatting';
+import { getPlaceholderImage } from '@/utils/nft-utils';
+import { useState } from 'react';
+import { listAsset } from '@/lib/marketplace/operations';
+import { shouldUseDirectCall, executeContractCall, openContractCall } from '@/lib/contract-utils';
+import { storeTxid } from '@/utils/localStorageUtils';
+import { useDevnetWallet } from '@/lib/devnet-wallet-context';
+import { useRouter } from 'next/navigation';
+import { useNetwork } from '@/lib/use-network';
+import { useCurrentAddress } from '@/hooks/useCurrentAddress';
 
 interface NftCardProps {
   nft: {
@@ -37,10 +33,10 @@ interface NftCardProps {
   };
 }
 
-export const NftCard = ({ nft, }: NftCardProps) => {
+export const NftCard = ({ nft }: NftCardProps) => {
   const { nftAssetContract, tokenId } = nft;
   const contractName = formatContractName(nftAssetContract);
-  const [price, setPrice] = useState("");
+  const [price, setPrice] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
   const router = useRouter();
@@ -56,16 +52,16 @@ export const NftCard = ({ nft, }: NftCardProps) => {
     if (!network) return;
     if (!price) {
       toast({
-        title: "Error",
-        description: "Please enter a price",
-        status: "error",
+        title: 'Error',
+        description: 'Please enter a price',
+        status: 'error',
       });
       return;
     }
 
     setIsLoading(true);
     try {
-      const [contractAddress, contractName] = nftAssetContract.split(".");
+      const [contractAddress, contractName] = nftAssetContract.split('.');
       const txOptions = await listAsset(network, {
         sender: currentAddress,
         nftContractAddress: contractAddress,
@@ -76,16 +72,15 @@ export const NftCard = ({ nft, }: NftCardProps) => {
       });
 
       if (shouldUseDirectCall(network)) {
-
         const { txid } = await executeContractCall(txOptions, currentWallet);
         storeTxid(txid);
         toast({
-          title: "NFT Listed",
+          title: 'NFT Listed',
           description: `Transaction broadcast with ID: ${txid}`,
-          status: "success",
+          status: 'success',
           duration: 3000,
         });
-        router.push("/");
+        router.push('/');
         return;
       }
 
@@ -93,27 +88,27 @@ export const NftCard = ({ nft, }: NftCardProps) => {
         ...txOptions,
         onFinish: (data) => {
           toast({
-            title: "Success",
-            description: "Listing created successfully!",
-            status: "success",
+            title: 'Success',
+            description: 'Listing created successfully!',
+            status: 'success',
             duration: 3000,
           });
-          router.push("/");
+          router.push('/');
         },
         onCancel: () => {
           toast({
-            title: "Cancelled",
-            description: "Transaction was cancelled",
-            status: "info",
+            title: 'Cancelled',
+            description: 'Transaction was cancelled',
+            status: 'info',
           });
         },
       });
     } catch (e) {
       console.error(e);
       toast({
-        title: "Error",
-        description: "Failed to create listing",
-        status: "error",
+        title: 'Error',
+        description: 'Failed to create listing',
+        status: 'error',
       });
     } finally {
       setIsLoading(false);
@@ -126,7 +121,7 @@ export const NftCard = ({ nft, }: NftCardProps) => {
         maxW="sm"
         cursor="pointer"
         transition="transform 0.2s"
-        _hover={{ transform: "scale(1.02)" }}
+        _hover={{ transform: 'scale(1.02)' }}
         overflow="hidden"
         boxShadow="lg"
       >
@@ -142,12 +137,7 @@ export const NftCard = ({ nft, }: NftCardProps) => {
                 objectFit="cover"
               />
             ) : (
-              <Box
-                width="100%"
-                height="100%"
-                bg="gray.100"
-                borderRadius="lg"
-              />
+              <Box width="100%" height="100%" bg="gray.100" borderRadius="lg" />
             )}
           </Box>
           <Stack spacing={2} p={4}>

@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { openContractCall } from "@/lib/contract-utils";
+import { openContractCall } from '@/lib/contract-utils';
 import {
   CardFooter,
   Heading,
@@ -13,22 +13,19 @@ import {
   Image,
   Box,
   Flex,
-} from "@chakra-ui/react";
-import {
-  cancelListing,
-  purchaseListingStx,
-} from "@/lib/marketplace/operations";
-import { useContext, useState, useEffect } from "react";
-import { HiroWalletContext } from "../HiroWalletProvider";
-import { useRouter } from "next/navigation";
-import { shouldUseDirectCall } from "@/lib/contract-utils";
-import { executeContractCall } from "@/lib/contract-utils";
-import { useDevnetWallet } from "@/lib/devnet-wallet-context";
-import { useGetTxId } from "@/hooks/useNftHoldings";
-import { formatContractName } from "@/utils/formatting";
-import { getPlaceholderImage } from "@/utils/nft-utils";
-import { useNetwork } from "@/lib/use-network";
-import { useCurrentAddress } from "@/hooks/useCurrentAddress";
+} from '@chakra-ui/react';
+import { cancelListing, purchaseListingStx } from '@/lib/marketplace/operations';
+import { useContext, useState, useEffect } from 'react';
+import { HiroWalletContext } from '../HiroWalletProvider';
+import { useRouter } from 'next/navigation';
+import { shouldUseDirectCall } from '@/lib/contract-utils';
+import { executeContractCall } from '@/lib/contract-utils';
+import { useDevnetWallet } from '@/lib/devnet-wallet-context';
+import { useGetTxId } from '@/hooks/useNftHoldings';
+import { formatContractName } from '@/utils/formatting';
+import { getPlaceholderImage } from '@/utils/nft-utils';
+import { useNetwork } from '@/lib/use-network';
+import { useCurrentAddress } from '@/hooks/useCurrentAddress';
 
 interface ListingCardProps {
   listing: {
@@ -51,25 +48,25 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
   const [purchaseTxId, setPurchaseTxId] = useState<string | null>(null);
   const network = useNetwork();
   const currentAddress = useCurrentAddress();
-  const { data: txData } = useGetTxId(purchaseTxId || "");
+  const { data: txData } = useGetTxId(purchaseTxId || '');
   console.log('ListingCard listing', listing);
 
   useEffect(() => {
     // @ts-ignore
-    if (txData && txData.tx_status === "success") {
+    if (txData && txData.tx_status === 'success') {
       toast({
-        title: "Purchase Confirmed",
-        description: "Your purchase has been confirmed on the blockchain",
-        status: "success",
+        title: 'Purchase Confirmed',
+        description: 'Your purchase has been confirmed on the blockchain',
+        status: 'success',
       });
       onRefresh();
       setPurchaseTxId(null);
       // @ts-ignore
-    } else if (txData && txData.tx_status === "abort_by_response") {
+    } else if (txData && txData.tx_status === 'abort_by_response') {
       toast({
-        title: "Purchase Failed",
-        description: "The transaction was aborted",
-        status: "error",
+        title: 'Purchase Failed',
+        description: 'The transaction was aborted',
+        status: 'error',
       });
       setPurchaseTxId(null);
     }
@@ -77,22 +74,18 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
 
   const handlePurchase = async () => {
     if (!network || !currentAddress) return;
-    console.log("listing", listing);
+    console.log('listing', listing);
     try {
-      const txOptions = await purchaseListingStx(
-        network,
-        currentAddress,
-        listing
-      );
-      console.log("txOptions", txOptions);
+      const txOptions = await purchaseListingStx(network, currentAddress, listing);
+      console.log('txOptions', txOptions);
 
       if (shouldUseDirectCall(network)) {
         const { txid } = await executeContractCall(txOptions, currentWallet);
         setPurchaseTxId(txid);
         toast({
-          title: "Purchase Submitted",
+          title: 'Purchase Submitted',
           description: `Transaction broadcast with ID: ${txid}`,
-          status: "info",
+          status: 'info',
         });
         return;
       }
@@ -101,65 +94,62 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
         ...txOptions,
         onFinish: () => {
           toast({
-            title: "Success",
-            description: "Purchase submitted!",
-            status: "success",
+            title: 'Success',
+            description: 'Purchase submitted!',
+            status: 'success',
           });
           onRefresh();
         },
         onCancel: () => {
           toast({
-            title: "Cancelled",
-            description: "Transaction was cancelled",
-            status: "info",
+            title: 'Cancelled',
+            description: 'Transaction was cancelled',
+            status: 'info',
           });
         },
       });
     } catch (e) {
       console.error(e);
       toast({
-        title: "Error",
-        description: "Failed to purchase NFT",
-        status: "error",
+        title: 'Error',
+        description: 'Failed to purchase NFT',
+        status: 'error',
       });
     }
   };
 
   const handleCancel = async () => {
-    console.log("cancel listing", listing);
+    console.log('cancel listing', listing);
     if (listing.maker !== currentAddress) return;
     if (!network) return;
 
     try {
-      const txOptions = await cancelListing(
-        network,
-        listing,
-      );
+      const txOptions = await cancelListing(network, listing);
 
       await openContractCall({
         ...txOptions,
         onFinish: (data) => {
           toast({
-            title: "Success",
-            description: "Listing cancelled successfully",
-            status: "success",
+            title: 'Success',
+            description: 'Listing cancelled successfully',
+            status: 'success',
           });
           onRefresh();
         },
         onCancel: () => {
           toast({
-            title: "Cancelled",
-            description: "Transaction was cancelled",
-            status: "info",
+            title: 'Cancelled',
+            description: 'Transaction was cancelled',
+            status: 'info',
           });
         },
       });
     } catch (e) {
       console.error(e);
       toast({
-        title: "Error",
-        description: "Failed to cancel listing",
-        status: "error",
+        title: 'Error',
+        description: 'Failed to cancel listing',
+        status: 'error',
       });
     }
   };
@@ -171,7 +161,7 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
       maxW="sm"
       cursor="pointer"
       transition="transform 0.2s"
-      _hover={{ transform: "scale(1.02)" }}
+      _hover={{ transform: 'scale(1.02)' }}
       overflow="hidden"
       boxShadow="lg"
     >
@@ -187,12 +177,7 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
               objectFit="cover"
             />
           ) : (
-            <Box
-              width="100%"
-              height="100%"
-              bg="gray.100"
-              borderRadius="lg"
-            />
+            <Box width="100%" height="100%" bg="gray.100" borderRadius="lg" />
           )}
         </Box>
         <Stack spacing={2} p={4}>
@@ -219,7 +204,7 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
           ) : (
             <Button
               colorScheme="orange"
-                onClick={handlePurchase}
+              onClick={handlePurchase}
               isLoading={!!purchaseTxId && !txData}
               loadingText="Purchasing..."
             >

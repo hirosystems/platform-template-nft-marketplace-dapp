@@ -1,38 +1,38 @@
-"use client";
+'use client';
 
-import { Box, Button, Container, Flex, Link } from "@chakra-ui/react";
-import { useContext, useCallback } from "react";
-import { HiroWalletContext } from "./HiroWalletProvider";
-import { useDevnetWallet } from "@/lib/devnet-wallet-context";
-import { DevnetWalletButton } from "./DevnetWalletButton";
-import { ConnectWalletButton } from "./ConnectWallet";
-import { NetworkSelector } from "./NetworkSelector";
-import { isDevnetEnvironment, useNetwork } from "@/lib/use-network";
+import { Box, Button, Container, Flex, Link } from '@chakra-ui/react';
+import { useContext, useCallback } from 'react';
+import { HiroWalletContext } from './HiroWalletProvider';
+import { useDevnetWallet } from '@/lib/devnet-wallet-context';
+import { DevnetWalletButton } from './DevnetWalletButton';
+import { ConnectWalletButton } from './ConnectWallet';
+import { NetworkSelector } from './NetworkSelector';
+import { isDevnetEnvironment, useNetwork } from '@/lib/use-network';
 
 export const Navbar = () => {
   const { isWalletConnected } = useContext(HiroWalletContext);
-  console.log("isWalletConnected", isWalletConnected);
+  console.log('isWalletConnected', isWalletConnected);
   const { currentWallet, wallets, setCurrentWallet } = useDevnetWallet();
   const network = useNetwork();
 
   const handleConnect = useCallback(async () => {
     if (!isWalletConnected) {
       try {
-        const { showConnect } = await import("@stacks/connect");
+        const { showConnect } = await import('@stacks/connect');
         showConnect({
           appDetails: {
-            name: "NFT Marketplace",
-            icon: "https://freesvg.org/img/1541103084.png",
+            name: 'NFT Marketplace',
+            icon: 'https://freesvg.org/img/1541103084.png',
           },
           onFinish: () => {
             window.location.reload();
           },
           onCancel: () => {
-            console.log("popup closed!");
+            console.log('popup closed!');
           },
         });
       } catch (error) {
-        console.error("Failed to load @stacks/connect:", error);
+        console.error('Failed to load @stacks/connect:', error);
       }
     }
   }, [isWalletConnected]);

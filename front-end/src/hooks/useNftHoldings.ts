@@ -5,9 +5,7 @@ import { getApi } from '@/lib/stacks-api';
 import { useNetwork } from '@/lib/use-network';
 
 // Custom hook to fetch NFT holdings for a given address
-export const useNftHoldings = (
-  address?: string,
-): UseQueryResult<NonFungibleTokenHoldingsList> => {
+export const useNftHoldings = (address?: string): UseQueryResult<NonFungibleTokenHoldingsList> => {
   const network = useNetwork();
 
   return useQuery<NonFungibleTokenHoldingsList>({
@@ -44,7 +42,7 @@ export const useGetTxId = (txId: string) => {
     enabled: !!txId && !!network,
     refetchInterval: (data) => {
       // @ts-expect-error
-      return data?.tx_status === "pending" ? 5000 : false;
+      return data?.tx_status === 'pending' ? 5000 : false;
     },
     retry: false,
     refetchIntervalInBackground: true,

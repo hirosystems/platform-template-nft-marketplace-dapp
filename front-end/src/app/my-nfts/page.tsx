@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Container,
@@ -12,25 +12,23 @@ import {
   Link,
   Box,
   Image,
-} from "@chakra-ui/react";
-import { NftCard } from "@/components/marketplace/NftCard";
-import { useNftHoldings } from "@/hooks/useNftHoldings";
-import { formatValue } from "@/lib/clarity-utils";
-import { mintFunnyDogNFT } from "@/lib/nft/operations";
-import { useNetwork } from "@/lib/use-network";
-import { useCurrentAddress } from "@/hooks/useCurrentAddress";
-import { ExternalLinkIcon } from "@chakra-ui/icons";
-import { useState } from "react";
+} from '@chakra-ui/react';
+import { NftCard } from '@/components/marketplace/NftCard';
+import { useNftHoldings } from '@/hooks/useNftHoldings';
+import { formatValue } from '@/lib/clarity-utils';
+import { mintFunnyDogNFT } from '@/lib/nft/operations';
+import { useNetwork } from '@/lib/use-network';
+import { useCurrentAddress } from '@/hooks/useCurrentAddress';
+import { ExternalLinkIcon } from '@chakra-ui/icons';
+import { useState } from 'react';
 
 export default function MyNFTsPage() {
   const [lastTxId, setLastTxId] = useState<string | null>(null);
   const currentAddress = useCurrentAddress();
-  console.log("currentAddress", currentAddress);
+  console.log('currentAddress', currentAddress);
   const network = useNetwork();
-  const { data: nftHoldings, isLoading: nftHoldingsLoading } = useNftHoldings(
-    currentAddress || ""
-  );
-  console.log("nftHoldings", nftHoldings);
+  const { data: nftHoldings, isLoading: nftHoldingsLoading } = useNftHoldings(currentAddress || '');
+  console.log('nftHoldings', nftHoldings);
 
   const toast = useToast();
   const handleMintNFT = async () => {
@@ -40,19 +38,18 @@ export default function MyNFTsPage() {
       const txId = await mintFunnyDogNFT(network, currentAddress);
       setLastTxId(txId);
       toast({
-        title: "NFT Minting Started",
-        description:
-          "Your NFT is being minted. This process may take a few minutes.",
-        status: "success",
+        title: 'NFT Minting Started',
+        description: 'Your NFT is being minted. This process may take a few minutes.',
+        status: 'success',
         duration: 5000,
         isClosable: true,
       });
-      console.log("minted", txId);
+      console.log('minted', txId);
     } catch (error) {
       toast({
-        title: "Minting Failed",
-        description: "There was an error minting your NFT",
-        status: "error",
+        title: 'Minting Failed',
+        description: 'There was an error minting your NFT',
+        status: 'error',
         duration: 5000,
         isClosable: true,
       });
@@ -60,23 +57,9 @@ export default function MyNFTsPage() {
   };
 
   const MintCard = () => (
-    <Box
-      borderWidth="1px"
-      borderRadius="lg"
-      overflow="hidden"
-      bg="white"
-      boxShadow="md"
-    >
+    <Box borderWidth="1px" borderRadius="lg" overflow="hidden" bg="white" boxShadow="md">
       <Box position="relative" paddingTop="100%">
-        <Center
-          position="absolute"
-          top={0}
-          left={0}
-          right={0}
-          bottom={0}
-          bg="gray.100"
-        >
-        </Center>
+        <Center position="absolute" top={0} left={0} right={0} bottom={0} bg="gray.100"></Center>
       </Box>
       <VStack p={4} spacing={3} align="stretch">
         <Text fontWeight="bold" fontSize="lg">
@@ -85,12 +68,7 @@ export default function MyNFTsPage() {
         <Text fontSize="sm" color="gray.600">
           Mint a new Funny Dog NFT to your collection
         </Text>
-        <Button
-          colorScheme="blue"
-          onClick={handleMintNFT}
-          width="full"
-          size="sm"
-        >
+        <Button colorScheme="blue" onClick={handleMintNFT} width="full" size="sm">
           Mint NFT
         </Button>
         {lastTxId && (
@@ -130,17 +108,17 @@ export default function MyNFTsPage() {
           My NFTs
         </Text>
         <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
-          {nftHoldings?.results && nftHoldings.results.length > 0 ? (
-            nftHoldings.results.map((holding) => (
-              <NftCard
-                key={holding.asset_identifier}
-                nft={{
-                  nftAssetContract: holding.asset_identifier.split("::")[0],
-                  tokenId: +formatValue(holding.value.hex).replace("u", ""),
-                }}
-              />
-            ))
-          ) : null}
+          {nftHoldings?.results && nftHoldings.results.length > 0
+            ? nftHoldings.results.map((holding) => (
+                <NftCard
+                  key={holding.asset_identifier}
+                  nft={{
+                    nftAssetContract: holding.asset_identifier.split('::')[0],
+                    tokenId: +formatValue(holding.value.hex).replace('u', ''),
+                  }}
+                />
+              ))
+            : null}
           <MintCard />
         </SimpleGrid>
       </VStack>

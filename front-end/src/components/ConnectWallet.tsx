@@ -1,16 +1,8 @@
-"use client";
-import {
-  Box,
-  Button,
-  Flex,
-  Icon,
-  Text,
-  Tooltip,
-  IconButton,
-} from "@chakra-ui/react";
-import { useContext, useState } from "react";
-import { HiroWalletContext } from "./HiroWalletProvider";
-import { RiFileCopyLine, RiCloseLine } from "react-icons/ri";
+'use client';
+import { Box, Button, Flex, Icon, Text, Tooltip, IconButton } from '@chakra-ui/react';
+import { useContext, useState } from 'react';
+import { HiroWalletContext } from './HiroWalletProvider';
+import { RiFileCopyLine, RiCloseLine } from 'react-icons/ri';
 
 interface ConnectWalletButtonProps {
   children?: React.ReactNode;
@@ -20,16 +12,10 @@ interface ConnectWalletButtonProps {
 export const ConnectWalletButton = (buttonProps: ConnectWalletButtonProps) => {
   const { children } = buttonProps;
   const [didCopyAddress, setDidCopyAddress] = useState(false);
-  const { 
-    authenticate, 
-    isWalletConnected, 
-    mainnetAddress, 
-    testnetAddress,
-    network,
-    disconnect 
-  } = useContext(HiroWalletContext);
+  const { authenticate, isWalletConnected, mainnetAddress, testnetAddress, network, disconnect } =
+    useContext(HiroWalletContext);
 
-  const currentAddress = network === "mainnet" ? mainnetAddress : testnetAddress;
+  const currentAddress = network === 'mainnet' ? mainnetAddress : testnetAddress;
 
   const copyAddress = () => {
     if (currentAddress) {
@@ -42,7 +28,7 @@ export const ConnectWalletButton = (buttonProps: ConnectWalletButtonProps) => {
   };
 
   const truncateMiddle = (str: string | null) => {
-    if (!str) return "";
+    if (!str) return '';
     if (str.length <= 12) return str;
     return `${str.slice(0, 6)}...${str.slice(-4)}`;
   };
@@ -77,13 +63,8 @@ export const ConnectWalletButton = (buttonProps: ConnectWalletButtonProps) => {
       </Tooltip>
     </Flex>
   ) : (
-    <Button
-      size="sm"
-      onClick={authenticate}
-      data-testid="wallet-connect-button"
-      {...buttonProps}
-    >
-      {children || "Connect Wallet"}
+    <Button size="sm" onClick={authenticate} data-testid="wallet-connect-button" {...buttonProps}>
+      {children || 'Connect Wallet'}
     </Button>
   );
 };
