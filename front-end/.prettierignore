@@ -1,0 +1,10 @@
+.next
+node_modules
+build
+dist
+coverage
+.vercel
+public 
+*-lock.yaml
+*-lock.json
+next.config.js
