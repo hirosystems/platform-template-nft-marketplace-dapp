@@ -29,21 +29,23 @@ export default function BrowsePage() {
 
   const loadListings = async () => {
     if (!network) return;
-    setIsLoadingListings(true);
     const fetchedListings = await fetchListings(network);
-    console.log("fetchedListings", fetchedListings);
+    console.log("foo: fetchedListings", fetchedListings);
     setListings(fetchedListings);
     setIsLoadingListings(false);
   };
 
   useEffect(() => {
-    loadListings();
+    (async () => {
+      await loadListings();
 
-    const intervalId = setInterval(() => {
-      loadListings();
-    }, 30000);
+      // Set up interval for subsequent updates
+      const intervalId = setInterval(() => {
+        loadListings();
+      }, 10000);
 
-    return () => clearInterval(intervalId);
+      return () => clearInterval(intervalId);
+    })();
   }, [network]);
 
   if (!network) {
