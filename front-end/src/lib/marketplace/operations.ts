@@ -31,6 +31,7 @@ const baseContractCall = {
 };
 
 export interface ListAssetParams {
+  sender: string;
   nftContractAddress: string;
   nftContractName: string;
   tokenId: number;
@@ -48,7 +49,10 @@ export const listAsset = (network: Network, params: ListAssetParams): ContractCa
     'taker': params.intendedTaker ? someCV(principalCV(params.intendedTaker)) : noneCV(),
     'payment-asset-contract': noneCV(),
   };
-  console.log('nftAsset', nftAsset);
+
+  const postCondition = Pc.principal(params.sender)
+    .willSendAsset()
+    .nft(`${params.nftContractAddress}.${params.nftContractName}::${params.nftContractName}`, Cl.uint(params.tokenId));
 
   return {
     ...baseContractCall,
@@ -59,26 +63,39 @@ export const listAsset = (network: Network, params: ListAssetParams): ContractCa
       contractPrincipalCV(params.nftContractAddress, params.nftContractName),
       tupleCV(nftAsset)
     ],
-    postConditionMode: PostConditionMode.Allow,
+    postConditions: [postCondition],
+    postConditionMode: PostConditionMode.Deny,
   };
 };
 
 export const cancelListing = async (
   network: Network,
-  listingId: number,
-  nftContract: string
+  listing: Listing,
 ): Promise<ContractCallRegularOptions> => {
   const marketplaceContract = getMarketplaceContract(network);
-  const [contractAddress, contractName] = nftContract.split('.');
+  console.log('listing', listing);
+  console.log('marketplaceContract', marketplaceContract);
+  const { id: listingId, tokenId, nftAssetContract, maker } = listing;
+  const [contractAddress, contractName] = nftAssetContract.split('.');
+
+  //  Post condition to ensure NFT transfer from marketplace contract back to maker
+  const postCondition = Pc.principal(`${marketplaceContract.contractAddress}.${marketplaceContract.contractName}`)
+    .willSendAsset()
+    .nft(`${contractAddress}.${contractName}::${contractName}`, Cl.uint(tokenId));
+
+  console.log('postCondition', postCondition);
+
   return {
     ...baseContractCall,
     ...marketplaceContract,
+    network,
     functionName: 'cancel-listing',
-    postConditionMode: PostConditionMode.Allow,
     functionArgs: [
       uintCV(listingId),
       contractPrincipalCV(contractAddress, contractName)
     ],
+    postConditions: [postCondition],
+    postConditionMode: PostConditionMode.Deny,
   };
 };
 
@@ -92,9 +109,21 @@ export const purchaseListingStx = async (
   listing: Listing
 ): Promise<ContractCallRegularOptions> => {
   const marketplaceContract = getMarketplaceContract(network);
-  const { id, tokenId, price, nftAssetContract } = listing;
-  // Split to follow the type asset: AssetString
+  const { id, tokenId, price, nftAssetContract, maker } = listing;
   const [contractAddress, contractName] = nftAssetContract.split('.');
+
+  // Post condition for STX transfer from marketplace to maker
+  const stxCondition = Pc.principal(currentAddress)
+    .willSendEq(price)
+    .ustx();
+
+  // Post condition for NFT transfer from marketplace to buyer
+  const nftCondition = Pc.principal(`${marketplaceContract.contractAddress}.${marketplaceContract.contractName}`)
+    .willSendAsset()
+    .nft(`${contractAddress}.${contractName}::${contractName}`, Cl.uint(tokenId));
+
+  console.log('stxCondition', stxCondition);
+  console.log('nftCondition', nftCondition);
 
   return {
     ...baseContractCall,
@@ -105,7 +134,8 @@ export const purchaseListingStx = async (
       uintCV(id),
       contractToPrincipalCV(nftAssetContract)
     ],
-    postConditionMode: PostConditionMode.Allow,
+    postConditions: [stxCondition, nftCondition],
+    postConditionMode: PostConditionMode.Deny,
   };
 };
 
@@ -149,6 +179,8 @@ const parseListing = (listingId: number, cv: ClarityValue): Listing | undefined 
     price: ClarityValue;
     'payment-asset-contract': ClarityValue;
   }>;
+
+  console.log('tuple', tuple);
 
   // const id = tuple.value.id ? Number(cvToString(tuple.value.id)) : Number(cvToString(tuple.value['token-id']));
   const maker = cvToString(tuple.value.maker);

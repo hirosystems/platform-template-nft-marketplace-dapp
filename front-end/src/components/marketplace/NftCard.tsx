@@ -37,7 +37,7 @@ interface NftCardProps {
   };
 }
 
-export const NftCard = ({ nft }: NftCardProps) => {
+export const NftCard = ({ nft, }: NftCardProps) => {
   const { nftAssetContract, tokenId } = nft;
   const contractName = formatContractName(nftAssetContract);
   const [price, setPrice] = useState("");
@@ -48,7 +48,7 @@ export const NftCard = ({ nft }: NftCardProps) => {
   const { currentWallet } = useDevnetWallet();
   const network = useNetwork();
 
-  if (!currentAddress) {
+  if (!currentAddress || !network) {
     return null;
   }
 
@@ -67,6 +67,7 @@ export const NftCard = ({ nft }: NftCardProps) => {
     try {
       const [contractAddress, contractName] = nftAssetContract.split(".");
       const txOptions = await listAsset(network, {
+        sender: currentAddress,
         nftContractAddress: contractAddress,
         nftContractName: contractName,
         tokenId: tokenId,
@@ -131,14 +132,23 @@ export const NftCard = ({ nft }: NftCardProps) => {
       >
         <CardBody padding={0}>
           <Box aspectRatio={1} overflow="hidden">
-            <Image
-              src={getPlaceholderImage(tokenId)}
-              alt={`NFT #${tokenId}`}
-              borderRadius="lg"
-              width="100%"
-              height="100%"
-              objectFit="cover"
-            />
+            {getPlaceholderImage(network, nftAssetContract, tokenId) != null ? (
+              <Image
+                src={getPlaceholderImage(network, nftAssetContract, tokenId) || ''}
+                alt={`NFT #${tokenId}`}
+                borderRadius="lg"
+                width="100%"
+                height="100%"
+                objectFit="cover"
+              />
+            ) : (
+              <Box
+                width="100%"
+                height="100%"
+                bg="gray.100"
+                borderRadius="lg"
+              />
+            )}
           </Box>
           <Stack spacing={2} p={4}>
             <Heading size="md">NFT #{tokenId}</Heading>

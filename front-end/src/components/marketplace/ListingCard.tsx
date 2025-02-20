@@ -24,8 +24,6 @@ import { useRouter } from "next/navigation";
 import { shouldUseDirectCall } from "@/lib/contract-utils";
 import { executeContractCall } from "@/lib/contract-utils";
 import { useDevnetWallet } from "@/lib/devnet-wallet-context";
-import { getApi } from "@/lib/stacks-api";
-import { DEVNET_STACKS_BLOCKCHAIN_API_URL } from "@/constants/devnet";
 import { useGetTxId } from "@/hooks/useNftHoldings";
 import { formatContractName } from "@/utils/formatting";
 import { getPlaceholderImage } from "@/utils/nft-utils";
@@ -54,6 +52,7 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
   const network = useNetwork();
   const currentAddress = useCurrentAddress();
   const { data: txData } = useGetTxId(purchaseTxId || "");
+  console.log('ListingCard listing', listing);
 
   useEffect(() => {
     // @ts-ignore
@@ -134,8 +133,7 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
     try {
       const txOptions = await cancelListing(
         network,
-        listing.id,
-        listing.nftAssetContract
+        listing,
       );
 
       await openContractCall({
@@ -166,6 +164,8 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
     }
   };
 
+  if (!network) return null;
+
   return (
     <Card
       maxW="sm"
@@ -177,13 +177,23 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
     >
       <CardBody padding={0}>
         <Box aspectRatio={1} overflow="hidden">
-          <Image
-            src={getPlaceholderImage(listing.tokenId)}
-            alt={`NFT #${listing.tokenId}`}
-            width="100%"
-            height="100%"
-            objectFit="cover"
-          />
+          {getPlaceholderImage(network, listing.nftAssetContract, listing.tokenId) != null ? (
+            <Image
+              src={getPlaceholderImage(network, listing.nftAssetContract, listing.tokenId) || ''}
+              alt={`NFT #${listing.tokenId}`}
+              borderRadius="lg"
+              width="100%"
+              height="100%"
+              objectFit="cover"
+            />
+          ) : (
+            <Box
+              width="100%"
+              height="100%"
+              bg="gray.100"
+              borderRadius="lg"
+            />
+          )}
         </Box>
         <Stack spacing={2} p={4}>
           <Heading size="md">NFT #{listing.tokenId}</Heading>

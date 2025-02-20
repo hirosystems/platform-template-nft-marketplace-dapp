@@ -30,6 +30,7 @@ export default function MyNFTsPage() {
   const { data: nftHoldings, isLoading: nftHoldingsLoading } = useNftHoldings(
     currentAddress || ""
   );
+  console.log("nftHoldings", nftHoldings);
 
   const toast = useToast();
   const handleMintNFT = async () => {
