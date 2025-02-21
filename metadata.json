@@ -5,6 +5,7 @@
   "framework": "clarity, next.js, react.js",
   "useCase": "nft marketplace",
   "complexity": "intermediate",
+  "demoUrl": "https://demo.nft-marketplace-dapp.platform.hiro.so",
   "tags": [
     "nft",
     "marketplace",
