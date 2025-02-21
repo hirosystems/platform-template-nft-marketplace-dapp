@@ -71,7 +71,8 @@ export const NftCard = ({ nft }: NftCardProps) => {
         expiry: 1000000000,
       });
 
-      if (shouldUseDirectCall(network)) {
+      console.log('txOptions', txOptions);
+      if (shouldUseDirectCall()) {
         const { txid } = await executeContractCall(txOptions, currentWallet);
         storeTxid(txid);
         toast({

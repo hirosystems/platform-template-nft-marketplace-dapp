@@ -38,7 +38,7 @@ export const NetworkSelector: FC = () => {
     {
       name: 'Devnet',
       value: 'devnet' as Network,
-      endpoint: 'localhost:3999',
+      endpoint: '',
       status: 'offline',
     },
   ];

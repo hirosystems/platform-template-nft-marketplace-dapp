@@ -13,8 +13,8 @@ export const useNetwork = () => {
   return network;
 };
 
-export const isDevnetEnvironment = (network: Network | null) => {
-  return network === 'devnet';
+export const isDevnetEnvironment = () => {
+  return process.env.NEXT_PUBLIC_STACKS_NETWORK === 'devnet' && process.env.NEXT_PUBLIC_PLATFORM_HIRO_API_KEY;
 };
 
 export const isTestnetEnvironment = (network: Network | null) => {

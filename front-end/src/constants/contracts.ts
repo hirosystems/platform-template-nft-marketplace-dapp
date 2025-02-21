@@ -1,7 +1,7 @@
 import { isDevnetEnvironment, isTestnetEnvironment } from '@/lib/use-network';
 import { Network } from '@/lib/network';
 export const getNftContractAddress = (network: Network) => {
-  if (isDevnetEnvironment(network)) {
+  if (isDevnetEnvironment()) {
     return (
       process.env.NEXT_PUBLIC_DEPLOYER_ACCOUNT_ADDRESS ||
       'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM'
@@ -23,7 +23,7 @@ export const getNftContract = (network: Network) => {
 };
 
 export const getMarketplaceContractAddress = (network: Network) => {
-  if (isDevnetEnvironment(network)) {
+  if (isDevnetEnvironment()) {
     return (
       process.env.NEXT_PUBLIC_DEPLOYER_ACCOUNT_ADDRESS ||
       'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM'
@@ -37,9 +37,12 @@ export const getMarketplaceContractAddress = (network: Network) => {
 };
 
 export const getMarketplaceContract = (network: Network) => {
+  const contractName = isDevnetEnvironment()
+    ? 'nft-marketplace'
+    : 'nft-marketplace-1';
+
   return {
     contractAddress: getMarketplaceContractAddress(network),
-    // contractName: "marketplace",
-    contractName: 'nft-marketplace-1',
+    contractName,
   } as const;
 };

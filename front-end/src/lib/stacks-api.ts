@@ -60,7 +60,7 @@ export function apiClients(config: Configuration) {
 }
 
 export function getApiUrl(network: Network) {
-  if (isDevnetEnvironment(network)) {
+  if (isDevnetEnvironment()) {
     return DEVNET_STACKS_BLOCKCHAIN_API_URL || 'http://localhost:3999';
   }
   if (isTestnetEnvironment(network)) {

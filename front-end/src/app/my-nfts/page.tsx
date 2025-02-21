@@ -14,44 +14,89 @@ import {
   Image,
 } from '@chakra-ui/react';
 import { NftCard } from '@/components/marketplace/NftCard';
-import { useNftHoldings } from '@/hooks/useNftHoldings';
+import { useNftHoldings, useGetTxId } from '@/hooks/useNftHoldings';
 import { formatValue } from '@/lib/clarity-utils';
 import { mintFunnyDogNFT } from '@/lib/nft/operations';
 import { useNetwork } from '@/lib/use-network';
 import { useCurrentAddress } from '@/hooks/useCurrentAddress';
 import { ExternalLinkIcon } from '@chakra-ui/icons';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { shouldUseDirectCall, executeContractCall, openContractCall } from '@/lib/contract-utils';
+import { useDevnetWallet } from '@/lib/devnet-wallet-context';
+import { getExplorerLink } from '@/utils/explorer-links';
 
 export default function MyNFTsPage() {
   const [lastTxId, setLastTxId] = useState<string | null>(null);
   const currentAddress = useCurrentAddress();
   console.log('currentAddress', currentAddress);
   const network = useNetwork();
+  const { currentWallet } = useDevnetWallet();
   const { data: nftHoldings, isLoading: nftHoldingsLoading } = useNftHoldings(currentAddress || '');
-  console.log('nftHoldings', nftHoldings);
-
+  const { data: txData } = useGetTxId(lastTxId || '');
   const toast = useToast();
-  const handleMintNFT = async () => {
-    if (!currentAddress) return;
 
-    try {
-      const txId = await mintFunnyDogNFT(network, currentAddress);
-      setLastTxId(txId);
+  useEffect(() => {
+    // @ts-ignore
+    if (txData && txData.tx_status === 'success') {
       toast({
-        title: 'NFT Minting Started',
-        description: 'Your NFT is being minted. This process may take a few minutes.',
+        title: 'Minting Confirmed',
+        description: 'Your NFT has been minted successfully',
         status: 'success',
-        duration: 5000,
-        isClosable: true,
       });
-      console.log('minted', txId);
-    } catch (error) {
+      setLastTxId(null);
+      // @ts-ignore
+    } else if (txData && txData.tx_status === 'abort_by_response') {
       toast({
         title: 'Minting Failed',
-        description: 'There was an error minting your NFT',
+        description: 'The transaction was aborted',
         status: 'error',
-        duration: 5000,
-        isClosable: true,
+      });
+      setLastTxId(null);
+    }
+  }, [txData, toast]);
+
+  const handleMintNFT = async () => {
+    if (!network || !currentAddress) return;
+
+    try {
+      const txOptions = mintFunnyDogNFT(network, currentAddress);
+      console.log('txOptions', txOptions);
+
+      if (shouldUseDirectCall()) {
+        const { txid } = await executeContractCall(txOptions, currentWallet);
+        setLastTxId(txid);
+        toast({
+          title: 'Minting Submitted',
+          description: `Transaction broadcast with ID: ${txid}`,
+          status: 'info',
+        });
+        return;
+      }
+
+      await openContractCall({
+        ...txOptions,
+        onFinish: (data) => {
+          setLastTxId(data.txId);
+          toast({
+            title: 'Success',
+            description: 'Minting submitted!',
+            status: 'success',
+          });
+        },
+        onCancel: () => {
+          toast({
+            title: 'Cancelled',
+            description: 'Transaction was cancelled',
+            status: 'info',
+          });
+        },
+      });
+    } catch (error) {
+      console.error('Error minting NFT:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to mint NFT',
+        status: 'error',
       });
     }
   };
@@ -73,7 +118,7 @@ export default function MyNFTsPage() {
         </Button>
         {lastTxId && (
           <Link
-            href={`https://explorer.hiro.so/txid/${lastTxId.replace('0x', '')}?chain=${network}`}
+            href={getExplorerLink(lastTxId, network)}
             isExternal
             color="blue.500"
             fontSize="sm"

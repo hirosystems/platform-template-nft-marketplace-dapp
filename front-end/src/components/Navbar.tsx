@@ -70,7 +70,7 @@ export const Navbar = () => {
               <Box>My NFTs</Box>
             </Link>
             <NetworkSelector />
-            {isDevnetEnvironment(network) ? (
+            {isDevnetEnvironment() ? (
               <DevnetWalletButton
                 currentWallet={currentWallet}
                 wallets={wallets}

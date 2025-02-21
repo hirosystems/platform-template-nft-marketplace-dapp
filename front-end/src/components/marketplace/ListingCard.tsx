@@ -13,6 +13,7 @@ import {
   Image,
   Box,
   Flex,
+  Link,
 } from '@chakra-ui/react';
 import { cancelListing, purchaseListingStx } from '@/lib/marketplace/operations';
 import { useContext, useState, useEffect } from 'react';
@@ -26,6 +27,8 @@ import { formatContractName } from '@/utils/formatting';
 import { getPlaceholderImage } from '@/utils/nft-utils';
 import { useNetwork } from '@/lib/use-network';
 import { useCurrentAddress } from '@/hooks/useCurrentAddress';
+import { ExternalLinkIcon } from '@chakra-ui/icons';
+import { getExplorerLink } from '@/utils/explorer-links';
 
 interface ListingCardProps {
   listing: {
@@ -79,7 +82,7 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
       const txOptions = await purchaseListingStx(network, currentAddress, listing);
       console.log('txOptions', txOptions);
 
-      if (shouldUseDirectCall(network)) {
+      if (shouldUseDirectCall()) {
         const { txid } = await executeContractCall(txOptions, currentWallet);
         setPurchaseTxId(txid);
         toast({
@@ -210,6 +213,16 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
             >
               Purchase
             </Button>
+          )}
+          {purchaseTxId && (
+            <Link
+              href={getExplorerLink(purchaseTxId, network)}
+              isExternal
+              color="blue.500"
+              fontSize="sm"
+            >
+              View transaction <ExternalLinkIcon mx="2px" />
+            </Link>
           )}
         </Stack>
       </CardFooter>
