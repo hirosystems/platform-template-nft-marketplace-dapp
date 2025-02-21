@@ -4,6 +4,8 @@ This is a full-stack demo of an NFT marketplace built on the Stacks blockchain, 
 
 By following this guide, you can have a working NFT marketplace live on the Stacks blockchain in less than 5 minutes!
 
+(This example app is intended for educational purposes only. The provided smart contracts have not been audited.)
+
 ## Features
 
 - Mint NFTs to user wallets
