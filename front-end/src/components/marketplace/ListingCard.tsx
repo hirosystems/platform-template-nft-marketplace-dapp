@@ -52,7 +52,6 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
   const network = useNetwork();
   const currentAddress = useCurrentAddress();
   const { data: txData } = useGetTxId(purchaseTxId || '');
-  console.log('ListingCard listing', listing);
 
   useEffect(() => {
     // @ts-ignore
@@ -77,10 +76,8 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
 
   const handlePurchase = async () => {
     if (!network || !currentAddress) return;
-    console.log('listing', listing);
     try {
       const txOptions = await purchaseListingStx(network, currentAddress, listing);
-      console.log('txOptions', txOptions);
 
       if (shouldUseDirectCall()) {
         const { txid } = await executeContractCall(txOptions, currentWallet);
@@ -122,7 +119,6 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
   };
 
   const handleCancel = async () => {
-    console.log('cancel listing', listing);
     if (listing.maker !== currentAddress) return;
     if (!network) return;
 

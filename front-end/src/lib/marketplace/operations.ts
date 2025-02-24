@@ -79,8 +79,6 @@ export const cancelListing = async (
   listing: Listing
 ): Promise<ContractCallRegularOptions> => {
   const marketplaceContract = getMarketplaceContract(network);
-  console.log('listing', listing);
-  console.log('marketplaceContract', marketplaceContract);
   const { id: listingId, tokenId, nftAssetContract, maker } = listing;
   const [contractAddress, contractName] = nftAssetContract.split('.');
 
@@ -91,7 +89,6 @@ export const cancelListing = async (
     .willSendAsset()
     .nft(`${contractAddress}.${contractName}::${contractName}`, Cl.uint(tokenId));
 
-  console.log('postCondition', postCondition);
 
   return {
     ...baseContractCall,
@@ -127,8 +124,6 @@ export const purchaseListingStx = async (
     .willSendAsset()
     .nft(`${contractAddress}.${contractName}::${contractName}`, Cl.uint(tokenId));
 
-  console.log('stxCondition', stxCondition);
-  console.log('nftCondition', nftCondition);
 
   return {
     ...baseContractCall,
@@ -182,7 +177,6 @@ const parseListing = (listingId: number, cv: ClarityValue): Listing | undefined 
     'payment-asset-contract': ClarityValue;
   }>;
 
-  console.log('tuple', tuple);
 
   // const id = tuple.value.id ? Number(cvToString(tuple.value.id)) : Number(cvToString(tuple.value['token-id']));
   const maker = cvToString(tuple.value.maker);
@@ -222,13 +216,9 @@ const fetchListing = async (network: Network, listingId: number): Promise<Listin
     });
 
     const clarityValue = parseReadOnlyResponse(response);
-    console.log(clarityValue);
     if (!clarityValue) return undefined;
-    console.log(cvToString(clarityValue));
-    console.log(cvToJSON(clarityValue));
     const listing = parseListing(listingId, clarityValue);
     if (!listing) return undefined;
-    console.log(listing);
     return listing;
   } catch (error) {
     console.error(`Error fetching listing ${listingId}:`, error);
@@ -246,7 +236,6 @@ export async function fetchListings(network: Network, maxId: number = 10): Promi
       fetchListing(network, i + index)
     );
     const batchResults = await Promise.all(batchPromises);
-    console.log('batchResults', batchResults);
     allListings.push(
       ...batchResults.filter((listing): listing is Listing => listing !== undefined)
     );

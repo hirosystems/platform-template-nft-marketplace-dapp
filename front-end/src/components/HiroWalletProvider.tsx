@@ -68,7 +68,6 @@ export const HiroWalletProvider: FC<ProviderProps> = ({ children }) => {
 
   const authenticate = useCallback(() => {
     if (!stacksConnect || !userSession) {
-      console.log('Authentication failed: stacksConnect or userSession not initialized');
       return;
     }
 

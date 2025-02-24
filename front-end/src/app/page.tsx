@@ -17,12 +17,10 @@ export default function BrowsePage() {
   const { data: nftHoldings, isLoading: nftHoldingsLoading } = useNftHoldings(
     currentWallet?.stxAddress || ''
   );
-  console.log('nftHoldings', nftHoldings);
 
   const loadListings = async () => {
     if (!network) return;
     const fetchedListings = await fetchListings(network);
-    console.log('foo: fetchedListings', fetchedListings);
     setListings(fetchedListings);
     setIsLoadingListings(false);
   };

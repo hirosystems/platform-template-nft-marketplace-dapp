@@ -28,7 +28,6 @@ import { getExplorerLink } from '@/utils/explorer-links';
 export default function MyNFTsPage() {
   const [lastTxId, setLastTxId] = useState<string | null>(null);
   const currentAddress = useCurrentAddress();
-  console.log('currentAddress', currentAddress);
   const network = useNetwork();
   const { currentWallet } = useDevnetWallet();
   const { data: nftHoldings, isLoading: nftHoldingsLoading } = useNftHoldings(currentAddress || '');
@@ -60,7 +59,6 @@ export default function MyNFTsPage() {
 
     try {
       const txOptions = mintFunnyDogNFT(network, currentAddress);
-      console.log('txOptions', txOptions);
 
       if (shouldUseDirectCall()) {
         const { txid } = await executeContractCall(txOptions, currentWallet);

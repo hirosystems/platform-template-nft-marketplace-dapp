@@ -17,7 +17,6 @@ describe("nft-marketplace contract", () => {
       address1     // sender
     );
 
-    console.log('Mint Result:', mintResult);
     // Verify mint was successful by checking we got (ok u1)
     expect(mintResult.result).toBeOk(Cl.uint(1));
   });
@@ -34,7 +33,6 @@ describe("nft-marketplace contract", () => {
       deployer  // Only contract owner can whitelist
     );
 
-    console.log('Whitelist Result:', whitelistResult);
     expect(whitelistResult.result).toBeOk(Cl.bool(true));
 
     // Set up test parameters
@@ -43,8 +41,6 @@ describe("nft-marketplace contract", () => {
     const blockHeight = simnet.blockHeight;
     const expiry = blockHeight + 30; // 30 blocks from current height
 
-    console.log('Current block height:', blockHeight);
-    console.log('Setting expiry to:', expiry);
 
     // Call the list-asset function
     const listingResult = simnet.callPublicFn(
@@ -63,11 +59,9 @@ describe("nft-marketplace contract", () => {
       address1
     );
 
-    console.log('Listing Result:', listingResult);
 
     // Debug: Check if it's an error and what error code
     if (listingResult.result.type === 8) {
-      console.log('Got error code:', listingResult.result.value.value);
       /* Error codes from contract:
         ERR_EXPIRY_IN_PAST (err u1000)
         ERR_PRICE_ZERO (err u1001)

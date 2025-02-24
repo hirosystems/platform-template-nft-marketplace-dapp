@@ -11,7 +11,6 @@ import { isDevnetEnvironment, useNetwork } from '@/lib/use-network';
 
 export const Navbar = () => {
   const { isWalletConnected } = useContext(HiroWalletContext);
-  console.log('isWalletConnected', isWalletConnected);
   const { currentWallet, wallets, setCurrentWallet } = useDevnetWallet();
   const network = useNetwork();
 
@@ -28,7 +27,6 @@ export const Navbar = () => {
             window.location.reload();
           },
           onCancel: () => {
-            console.log('popup closed!');
           },
         });
       } catch (error) {
