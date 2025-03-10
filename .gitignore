@@ -3,3 +3,4 @@ node_modules
 
 clarity/.turbo/
 clarity/.debug_history
+clarity/.cache/
