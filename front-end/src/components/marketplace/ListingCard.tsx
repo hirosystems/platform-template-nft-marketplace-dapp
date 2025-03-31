@@ -45,7 +45,7 @@ interface ListingCardProps {
 }
 
 export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
-  const { testnetAddress, mainnetAddress } = useContext(HiroWalletContext);
+  const { testnetAddress, mainnetAddress, authenticate, isWalletConnected } = useContext(HiroWalletContext);
   const { currentWallet } = useDevnetWallet();
   const toast = useToast();
   const [purchaseTxId, setPurchaseTxId] = useState<string | null>(null);
@@ -75,6 +75,12 @@ export const ListingCard = ({ listing, onRefresh }: ListingCardProps) => {
   }, [txData, toast, onRefresh]);
 
   const handlePurchase = async () => {
+    if (!isWalletConnected) {
+      // Prompt user to connect wallet if not connected
+      authenticate();
+      return;
+    }
+    
     if (!network || !currentAddress) return;
     try {
       const txOptions = await purchaseListingStx(network, currentAddress, listing);
