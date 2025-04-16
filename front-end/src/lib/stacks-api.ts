@@ -71,6 +71,8 @@ export function getApiUrl(network: Network) {
 
 export function getApi(network: Network, stacksApiUrl?: string, headers?: HTTPHeaders) {
   const apiUrl = stacksApiUrl || getApiUrl(network);
-  const config = createConfig(apiUrl, headers);
+  const apiKey = process.env.NEXT_PUBLIC_PLATFORM_HIRO_API_KEY || '';
+  const apiHeaders = { 'x-api-key': apiKey, ...headers };
+  const config = createConfig(apiUrl, apiHeaders);
   return apiClients(config);
 }

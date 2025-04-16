@@ -1,4 +1,3 @@
-import { ContractCallRegularOptions } from '@/lib/contract-utils';
 import {
   AnchorMode,
   PostConditionMode,
@@ -10,21 +9,18 @@ import {
   contractPrincipalCV,
   tupleCV,
   cvToValue,
-  fetchCallReadOnlyFunction,
   deserializeCV,
   cvToString,
   ClarityType,
   ClarityValue,
   TupleCV,
   Pc,
-  NonFungiblePostCondition,
   Cl,
-  cvToJSON,
-  StxPostCondition,
 } from '@stacks/transactions';
 import { getMarketplaceContract } from '@/constants/contracts';
 import { getApi } from '@/lib/stacks-api';
 import { Network } from '@/lib/network';
+import { ContractCallRegularOptions } from '@stacks/connect';
 const baseContractCall = {
   anchorMode: AnchorMode.Any,
   postConditionMode: PostConditionMode.Deny,
@@ -89,7 +85,6 @@ export const cancelListing = async (
     .willSendAsset()
     .nft(`${contractAddress}.${contractName}::${contractName}`, Cl.uint(tokenId));
 
-
   return {
     ...baseContractCall,
     ...marketplaceContract,
@@ -123,7 +118,6 @@ export const purchaseListingStx = async (
   )
     .willSendAsset()
     .nft(`${contractAddress}.${contractName}::${contractName}`, Cl.uint(tokenId));
-
 
   return {
     ...baseContractCall,
@@ -176,7 +170,6 @@ const parseListing = (listingId: number, cv: ClarityValue): Listing | undefined 
     price: ClarityValue;
     'payment-asset-contract': ClarityValue;
   }>;
-
 
   // const id = tuple.value.id ? Number(cvToString(tuple.value.id)) : Number(cvToString(tuple.value['token-id']));
   const maker = cvToString(tuple.value.maker);

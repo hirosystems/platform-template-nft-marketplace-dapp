@@ -1,7 +1,7 @@
 import { PostConditionMode, principalCV } from '@stacks/transactions';
 import { getNftContract } from '@/constants/contracts';
 import { Network } from '@/lib/network';
-import { ContractCallRegularOptions } from '@/lib/contract-utils';
+import { ContractCallRegularOptions } from '@stacks/connect';
 
 export const mintFunnyDogNFT = (
   network: Network,

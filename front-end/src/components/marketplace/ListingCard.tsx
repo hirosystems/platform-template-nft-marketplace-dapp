@@ -18,7 +18,6 @@ import {
 import { cancelListing, purchaseListingStx } from '@/lib/marketplace/operations';
 import { useContext, useState, useEffect } from 'react';
 import { HiroWalletContext } from '../HiroWalletProvider';
-import { useRouter } from 'next/navigation';
 import { shouldUseDirectCall } from '@/lib/contract-utils';
 import { executeContractCall } from '@/lib/contract-utils';
 import { useDevnetWallet } from '@/lib/devnet-wallet-context';
