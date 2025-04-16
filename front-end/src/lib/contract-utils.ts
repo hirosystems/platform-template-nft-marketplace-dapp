@@ -1,6 +1,6 @@
-import { networkFromName } from '@stacks/network';
 import { DEVNET_NETWORK } from '@/constants/devnet';
-import { ContractCallRegularOptions as ContractCallRegularOptionsType } from '@stacks/connect';
+import { ContractCallRegularOptions, FinishedTxData, request } from '@stacks/connect';
+
 import {
   makeContractCall,
   broadcastTransaction,
@@ -8,13 +8,11 @@ import {
   ClarityValue,
   PostCondition,
   PostConditionMode,
-  AnchorMode,
 } from '@stacks/transactions';
 import { generateWallet } from '@stacks/wallet-sdk';
 import { DevnetWallet } from './devnet-wallet-context';
 import { isDevnetEnvironment } from './use-network';
-import { Network } from '@/lib/network';
-export type ContractCallRegularOptions = ContractCallRegularOptionsType;
+import { TransactionResult } from '@stacks/connect/dist/types/methods';
 
 interface DirectCallResponse {
   txid: string;
@@ -60,10 +58,36 @@ export const executeContractCall = async (
 
 export const openContractCall = async (options: ContractCallRegularOptions) => {
   try {
-    const { openContractCall: stacksOpenContractCall } = await import('@stacks/connect');
-    return stacksOpenContractCall(options);
-  } catch (error) {
-    console.error('Failed to load @stacks/connect:', error);
+    const contract = `${options.contractAddress}.${options.contractName}`;
+    const params: any = {
+      contract,
+      functionName: options.functionName,
+      functionArgs: options.functionArgs,
+      network:
+        typeof options.network === 'object'
+          ? 'chainId' in options.network
+            ? options.network.chainId === 1
+              ? 'mainnet'
+              : 'testnet'
+            : options.network
+          : options.network,
+      postConditions: options.postConditions,
+      postConditionMode: options.postConditionMode === PostConditionMode.Allow ? 'allow' : 'deny',
+      sponsored: options.sponsored,
+    };
+
+    const result: TransactionResult = await request({}, 'stx_callContract', params);
+
+    if (options.onFinish) {
+      options.onFinish(result as FinishedTxData);
+    }
+
+    return result;
+  } catch (error: unknown) {
+    console.error('Failed to execute contract call:', error);
+    if (error instanceof Error && error.message?.includes('cancelled') && options.onCancel) {
+      options.onCancel();
+    }
     throw error;
   }
 };

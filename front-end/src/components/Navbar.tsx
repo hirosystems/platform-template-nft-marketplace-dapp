@@ -17,18 +17,11 @@ export const Navbar = () => {
   const handleConnect = useCallback(async () => {
     if (!isWalletConnected) {
       try {
-        const { showConnect } = await import('@stacks/connect');
-        showConnect({
-          appDetails: {
-            name: 'NFT Marketplace',
-            icon: 'https://freesvg.org/img/1541103084.png',
-          },
-          onFinish: () => {
-            window.location.reload();
-          },
-          onCancel: () => {
-          },
-        });
+        const { connect } = await import('@stacks/connect');
+        // In the latest API, connect() doesn't take appDetails directly
+        // It's now handled through the request method with forceWalletSelect option
+        await connect();
+        window.location.reload();
       } catch (error) {
         console.error('Failed to load @stacks/connect:', error);
       }
