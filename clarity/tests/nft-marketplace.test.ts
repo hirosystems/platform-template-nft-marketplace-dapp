@@ -22,7 +22,7 @@ describe("nft marketplace", () => {
   });
 
   describe("listing assets", () => {
-    it.only("allows listing an NFT with valid parameters", () => {
+    it("allows listing an NFT with valid parameters", () => {
       // First whitelist the NFT contract
       simnet.callPublicFn(
         "nft-marketplace",
