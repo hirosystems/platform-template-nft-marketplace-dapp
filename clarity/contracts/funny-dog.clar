@@ -34,7 +34,11 @@
 )
 
 ;; SIP-009 function: Transfer NFT token to another owner.
-(define-public (transfer (token-id uint) (sender principal) (recipient principal))
+(define-public (transfer
+    (token-id uint)
+    (sender principal)
+    (recipient principal)
+  )
   (begin
     ;; #[filter(sender)]
     (asserts! (is-eq tx-sender sender) ERR_NOT_TOKEN_OWNER)
@@ -52,7 +56,6 @@
     ;; (asserts! (is-eq tx-sender CONTRACT_OWNER) ERR_OWNER_ONLY)
     ;; Mint the NFT and send it to the given recipient.
     (try! (nft-mint? funny-dog token-id recipient))
-
     ;; Update the last minted token ID.
     (var-set last-token-id token-id)
     ;; Return a success status and the newly minted NFT ID.
